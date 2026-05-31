@@ -1,6 +1,7 @@
 package com.aaroncraft.megacobble.client;
 
 import com.aaroncraft.megacobble.MegaCobble;
+import com.aaroncraft.megacobble.item.MegaStones;
 import com.aaroncraft.megacobble.item.ModItems;
 import com.aaroncraft.megacobble.mega.MegaEvolution;
 import com.aaroncraft.megacobble.net.MegaEvolvePayload;
@@ -9,7 +10,6 @@ import com.cobblemon.mod.common.client.battle.ActiveClientBattlePokemon;
 import com.cobblemon.mod.common.client.battle.ClientBattlePokemon;
 import com.cobblemon.mod.common.client.battle.SingleActionRequest;
 import com.cobblemon.mod.common.client.gui.battle.subscreen.BattleMoveSelection;
-import com.cobblemon.mod.common.pokemon.FormData;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
@@ -143,13 +143,14 @@ public final class MegaButton {
     /** Optimistically update the in-battle name and portrait (the battle menu reads these, not the live party). */
     private static void updateBattleMenu(BattleMoveSelection selection, Pokemon pokemon) {
         ClientBattlePokemon battlePokemon = selection.getRequest().getActivePokemon().getBattlePokemon();
-        FormData mega = MegaEvolution.findMegaForm(pokemon);
-        if (battlePokemon == null || mega == null) {
+        MegaStones.MegaStone stone = MegaStones.byItem(pokemon.heldItem().getItem());
+        if (battlePokemon == null || stone == null) {
             return;
         }
-        battlePokemon.setDisplayName(Component.literal(MegaEvolution.buildMegaName(pokemon, mega)));
+        battlePokemon.setDisplayName(Component.literal(
+            MegaEvolution.buildMegaName(pokemon.getSpecies().getName(), stone.form())));
         Set<String> aspects = new HashSet<>(battlePokemon.getState().getCurrentAspects());
-        aspects.addAll(mega.getAspects());
+        aspects.add(stone.aspect());
         battlePokemon.updateAspects(aspects);
     }
 
@@ -169,10 +170,14 @@ public final class MegaButton {
         return mouseX >= X && mouseX <= X + DRAW_W && mouseY >= top && mouseY <= top + DRAW_H;
     }
 
-    /** Show only when: acting Pokémon holds Venusaurite, it has a mega form, and the player holds a Key Stone. */
+    /** Show only when: the acting Pokémon holds its matching Mega Stone and the player holds a Key Stone. */
     private static boolean shouldShow(BattleMoveSelection selection) {
         Pokemon pokemon = actingPokemon(selection);
-        if (pokemon == null || !pokemon.heldItem().is(ModItems.VENUSAURITE) || MegaEvolution.findMegaForm(pokemon) == null) {
+        if (pokemon == null) {
+            return false;
+        }
+        MegaStones.MegaStone stone = MegaStones.byItem(pokemon.heldItem().getItem());
+        if (stone == null || !stone.species().equalsIgnoreCase(pokemon.getSpecies().getName())) {
             return false;
         }
         LocalPlayer player = Minecraft.getInstance().player;

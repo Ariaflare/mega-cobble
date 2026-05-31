@@ -1,0 +1,331 @@
+[
+  {
+    "stone": "abomasite",
+    "name": "Abomasite",
+    "species": "abomasnow",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "absolite",
+    "name": "Absolite",
+    "species": "absol",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "aerodactylite",
+    "name": "Aerodactylite",
+    "species": "aerodactyl",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "aggronite",
+    "name": "Aggronite",
+    "species": "aggron",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "alakazite",
+    "name": "Alakazite",
+    "species": "alakazam",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "altarianite",
+    "name": "Altarianite",
+    "species": "altaria",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "ampharosite",
+    "name": "Ampharosite",
+    "species": "ampharos",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "audinite",
+    "name": "Audinite",
+    "species": "audino",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "banettite",
+    "name": "Banettite",
+    "species": "banette",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "beedrillite",
+    "name": "Beedrillite",
+    "species": "beedrill",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "blastoisinite",
+    "name": "Blastoisinite",
+    "species": "blastoise",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "blazikenite",
+    "name": "Blazikenite",
+    "species": "blaziken",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "cameruptite",
+    "name": "Cameruptite",
+    "species": "camerupt",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "charizardite_x",
+    "name": "Charizardite X",
+    "species": "charizard",
+    "form": "Mega-X",
+    "aspect": "mega_x"
+  },
+  {
+    "stone": "charizardite_y",
+    "name": "Charizardite Y",
+    "species": "charizard",
+    "form": "Mega-Y",
+    "aspect": "mega_y"
+  },
+  {
+    "stone": "diancite",
+    "name": "Diancite",
+    "species": "diancie",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "galladite",
+    "name": "Galladite",
+    "species": "gallade",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "garchompite",
+    "name": "Garchompite",
+    "species": "garchomp",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "gardevoirite",
+    "name": "Gardevoirite",
+    "species": "gardevoir",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "gengarite",
+    "name": "Gengarite",
+    "species": "gengar",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "glalitite",
+    "name": "Glalitite",
+    "species": "glalie",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "gyaradosite",
+    "name": "Gyaradosite",
+    "species": "gyarados",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "heracronite",
+    "name": "Heracronite",
+    "species": "heracross",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "houndoominite",
+    "name": "Houndoominite",
+    "species": "houndoom",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "kangaskhanite",
+    "name": "Kangaskhanite",
+    "species": "kangaskhan",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "latiasite",
+    "name": "Latiasite",
+    "species": "latias",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "latiosite",
+    "name": "Latiosite",
+    "species": "latios",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "lopunnite",
+    "name": "Lopunnite",
+    "species": "lopunny",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "lucarionite",
+    "name": "Lucarionite",
+    "species": "lucario",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "manectite",
+    "name": "Manectite",
+    "species": "manectric",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "mawilite",
+    "name": "Mawilite",
+    "species": "mawile",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "medichamite",
+    "name": "Medichamite",
+    "species": "medicham",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "metagrossite",
+    "name": "Metagrossite",
+    "species": "metagross",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "mewtwonite_x",
+    "name": "Mewtwonite X",
+    "species": "mewtwo",
+    "form": "Mega-X",
+    "aspect": "mega_x"
+  },
+  {
+    "stone": "mewtwonite_y",
+    "name": "Mewtwonite Y",
+    "species": "mewtwo",
+    "form": "Mega-Y",
+    "aspect": "mega_y"
+  },
+  {
+    "stone": "pidgeotite",
+    "name": "Pidgeotite",
+    "species": "pidgeot",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "pinsirite",
+    "name": "Pinsirite",
+    "species": "pinsir",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "sablenite",
+    "name": "Sablenite",
+    "species": "sableye",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "salamencite",
+    "name": "Salamencite",
+    "species": "salamence",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "sceptilite",
+    "name": "Sceptilite",
+    "species": "sceptile",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "scizorite",
+    "name": "Scizorite",
+    "species": "scizor",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "sharpedonite",
+    "name": "Sharpedonite",
+    "species": "sharpedo",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "slowbronite",
+    "name": "Slowbronite",
+    "species": "slowbro",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "steelixite",
+    "name": "Steelixite",
+    "species": "steelix",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "swampertite",
+    "name": "Swampertite",
+    "species": "swampert",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "tyranitarite",
+    "name": "Tyranitarite",
+    "species": "tyranitar",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "venusaurite",
+    "name": "Venusaurite",
+    "species": "venusaur",
+    "form": "Mega",
+    "aspect": "mega"
+  }
+]

@@ -1,6 +1,7 @@
 package com.aaroncraft.megacobble.mega;
 
 import com.aaroncraft.megacobble.MegaCobble;
+import com.aaroncraft.megacobble.item.MegaStones;
 import com.aaroncraft.megacobble.item.ModItems;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
@@ -61,19 +62,25 @@ public final class MegaEvolution {
             return;
         }
 
-        // 3) The Pokémon must be holding the matching Mega Stone (Venusaurite for the PoC).
+        // 3) The Pokémon must be holding a Mega Stone that matches its species.
         ItemStack held = target.heldItem();
-        if (!held.is(ModItems.VENUSAURITE)) {
-            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: {} is not holding Venusaurite (held = {}).",
+        MegaStones.MegaStone stone = MegaStones.byItem(held.getItem());
+        if (stone == null) {
+            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: {} is not holding a Mega Stone (held = {}).",
                 target.getSpecies().getName(), held.isEmpty() ? "nothing" : held.getItem());
             return;
         }
+        if (!stone.species().equalsIgnoreCase(target.getSpecies().getName())) {
+            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: {} cannot use {} (it belongs to {}).",
+                target.getSpecies().getName(), stone.name(), stone.species());
+            return;
+        }
 
-        // 4) Resolve the mega form from the species' form list.
-        FormData megaForm = findMegaForm(target);
+        // 4) Resolve the specific mega form this stone unlocks (e.g. "Mega", "Mega-X").
+        FormData megaForm = findFormByName(target, stone.form());
         if (megaForm == null) {
-            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: no mega form found for species {}.",
-                target.getSpecies().getName());
+            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: form '{}' not found for species {}.",
+                stone.form(), target.getSpecies().getName());
             return;
         }
 
@@ -122,10 +129,10 @@ public final class MegaEvolution {
         }
     }
 
-    /** Finds the first form whose name begins with "Mega" (e.g. "Mega", "Mega-X", "Mega-Y"). */
-    public static FormData findMegaForm(Pokemon pokemon) {
+    /** Finds the form with the given name (case-insensitive), e.g. "Mega", "Mega-X". */
+    public static FormData findFormByName(Pokemon pokemon, String formName) {
         for (FormData form : pokemon.getSpecies().getForms()) {
-            if (form.getName().toLowerCase(Locale.ROOT).startsWith("mega")) {
+            if (form.getName().equalsIgnoreCase(formName)) {
                 return form;
             }
         }
@@ -136,14 +143,16 @@ public final class MegaEvolution {
      * Builds the transformed display name using the species' default (correctly-cased) name:
      * {@code Mega-<Species>[-X|-Y|-Z]}. "Mega" -> "Mega-Venusaur"; "Mega-X" -> "Mega-Charizard-X".
      */
-    public static String buildMegaName(Pokemon pokemon, FormData megaForm) {
-        String species = pokemon.getSpecies().getName(); // default name, correct convention (e.g. "Venusaur")
-        String formName = megaForm.getName();            // "Mega" or "Mega-X"
+    public static String buildMegaName(String speciesName, String formName) {
         String suffix = "";
         int dash = formName.indexOf('-');
         if (dash >= 0 && dash + 1 < formName.length()) {
             suffix = "-" + formName.substring(dash + 1).toUpperCase(Locale.ROOT); // "-X", "-Y", "-Z"
         }
-        return "Mega-" + species + suffix;
+        return "Mega-" + speciesName + suffix;
+    }
+
+    public static String buildMegaName(Pokemon pokemon, FormData megaForm) {
+        return buildMegaName(pokemon.getSpecies().getName(), megaForm.getName());
     }
 }

@@ -1,0 +1,15 @@
+{
+  "species": "cobblemon:diancie",
+  "order": 5,
+  "variations": [
+    {
+      "aspects": [
+        "mega"
+      ],
+      "poser": "cobblemon:substitute",
+      "model": "cobblemon:substitute.geo",
+      "texture": "cobblemon:textures/pokemon/substitute.png",
+      "layers": []
+    }
+  ]
+}
