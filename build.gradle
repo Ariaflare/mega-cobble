@@ -1,5 +1,9 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.11-SNAPSHOT'
+	// Applying the Kotlin plugin makes Loom remap the Kotlin @Metadata of mod dependencies
+	// (Cobblemon) into our mappings. Without this, Cobblemon's Kotlin reflection looks up
+	// intermediary names (e.g. net.minecraft.class_2960) that don't exist at dev runtime.
+	id 'org.jetbrains.kotlin.jvm' version '2.2.0'
 	id 'maven-publish'
 }
 
@@ -32,7 +36,9 @@ repositories {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	// Official Mojang mappings — matches the mappings Cobblemon is developed against,
+	// so its exposed Minecraft types line up 1:1 with our code (no Yarn translation).
+	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API

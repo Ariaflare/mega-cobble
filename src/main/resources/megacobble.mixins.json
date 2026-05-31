@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "com.aaroncraft.megacobble.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [],
+	"client": [
+		"BattleMoveSelectionMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

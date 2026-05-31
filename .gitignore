@@ -22,6 +22,9 @@ classes/
 run/
 remappedSrc/
 
+# --- build / run logs (local only) ---
+*.log
+
 # --- IDEA ---
 .idea/
 *.iml
