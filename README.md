@@ -172,6 +172,27 @@ and kept only as a local reference.
 - A handful of Z-A megas are not yet included because their data (ability or stats) is
   incomplete in `za_megas.json`.
 
+## Changelog
+
+Newest first.
+
+- **Shiny support** — mega forms (and the Eternal Floette base) render the **shiny**
+  substitute doll for shiny Pokémon, the normal doll otherwise.
+- **18 Legends Z-A megas** via a data-driven custom-mega pipeline (`species_additions` +
+  Cobblemon datapack abilities + a battle-start sim injector). Adds the new abilities
+  Dragonize, Piercing Drill, and Mega Sol (stub). Introduces per-stone `requiredAspect`,
+  used to gate **Floettite** to AZ's Eternal-Flower Floette.
+- **Native Showdown mega** — Mega Evolution now runs through Cobblemon's bundled Pokémon
+  Showdown sim, so the classic megas get **real in-battle stats / typing / ability**. Uses a
+  custom `HeldItemManager` (exposes our stones to the sim), a Key Stone → key-item bridge,
+  and a `MEGA_EVOLUTION` hook for the visual. Replaced the earlier custom button + packet.
+- **All 47 classic Mega Stones** (Gen 6 / ORAS) in a dedicated **Mega Stones** creative tab.
+- **Mega Evolution proof of concept (Venusaur)** — Key Stone + Venusaurite, an in-battle
+  Mega button, the form transform, the substitute-doll placeholder model, name change, and
+  revert on battle end / flee / faint.
+- **Initial scaffold** — Fabric Loom project targeting Minecraft 1.21.1, Cobblemon 1.7.3,
+  Java 21.
+
 ## License
 
 All rights reserved (private).
