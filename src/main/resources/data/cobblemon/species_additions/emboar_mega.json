@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:emboar",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 110,
+        "attack": 148,
+        "defence": 75,
+        "special_attack": 110,
+        "special_defence": 110,
+        "speed": 75
+      },
+      "primaryType": "fire",
+      "abilities": [
+        "moldbreaker"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Emboarite",
+      "secondaryType": "fighting"
+    }
+  ]
+}

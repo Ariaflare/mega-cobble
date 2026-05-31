@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:golurk",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 89,
+        "attack": 159,
+        "defence": 105,
+        "special_attack": 70,
+        "special_defence": 105,
+        "speed": 55
+      },
+      "primaryType": "ground",
+      "abilities": [
+        "unseenfist"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Golurkite",
+      "secondaryType": "ghost"
+    }
+  ]
+}

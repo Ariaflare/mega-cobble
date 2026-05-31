@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:froslass",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 70,
+        "attack": 80,
+        "defence": 70,
+        "special_attack": 140,
+        "special_defence": 100,
+        "speed": 120
+      },
+      "primaryType": "ice",
+      "abilities": [
+        "snowwarning"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Froslassite",
+      "secondaryType": "ghost"
+    }
+  ]
+}

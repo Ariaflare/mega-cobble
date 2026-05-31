@@ -2,6 +2,7 @@ package com.aaroncraft.megacobble;
 
 import com.aaroncraft.megacobble.item.ModItems;
 import com.aaroncraft.megacobble.mega.MegaEvolution;
+import com.aaroncraft.megacobble.mega.MegaShowdownInjector;
 import com.aaroncraft.megacobble.mega.MegaStoneHeldItemManager;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
@@ -27,15 +28,19 @@ public class MegaCobble implements ModInitializer {
 		LOGGER.info("[Mega Cobble] Initializing Mega Evolution for Cobblemon.");
 
 		ModItems.register();
+		MegaShowdownInjector.load();
 
 		// Expose our Mega Stones to the bundled Showdown sim (Cobblemon's default manager only
 		// handles cobblemon-namespace items). Higher priority than Cobblemon's LOWEST default.
 		HeldItemProvider.register(new MegaStoneHeldItemManager(), Priority.NORMAL);
 
-		// At battle start, bridge each player's Key Stone item to Cobblemon's key-item gate so the
-		// native mega button is only enabled when they actually brought a Key Stone.
-		CobblemonEvents.BATTLE_STARTED_PRE.subscribe(event ->
-			event.getBattle().getPlayers().forEach(MegaEvolution::syncKeyStone));
+		// At battle start: inject custom-mega data into the sim (megas not in Cobblemon's bundled
+		// sim), and bridge each player's Key Stone item to Cobblemon's key-item gate so the native
+		// mega button is only enabled when they actually brought a Key Stone.
+		CobblemonEvents.BATTLE_STARTED_PRE.subscribe(event -> {
+			MegaShowdownInjector.injectAll();
+			event.getBattle().getPlayers().forEach(MegaEvolution::syncKeyStone);
+		});
 
 		// When Showdown mega evolves a Pokémon, mirror the form change on the Minecraft side.
 		CobblemonEvents.MEGA_EVOLUTION.subscribe(event ->

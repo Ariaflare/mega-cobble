@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:feraligatr",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 85,
+        "attack": 160,
+        "defence": 125,
+        "special_attack": 89,
+        "special_defence": 93,
+        "speed": 78
+      },
+      "primaryType": "water",
+      "abilities": [
+        "dragonize"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Feraligite",
+      "secondaryType": "dragon"
+    }
+  ]
+}

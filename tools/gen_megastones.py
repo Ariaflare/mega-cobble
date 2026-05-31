@@ -30,6 +30,8 @@ FORMS = [
  ("tyranitar","Mega","mega","rock","dark"),("venusaur","Mega","mega","grass","poison"),
 ]
 # rayquaza intentionally omitted (no Mega Stone - uses Dragon Ascent)
+# Custom / Legends Z-A megas are handled by gen_custom_megas.py (they need species_additions
+# + a custom_mega_showdown.json injection), which appends to the manifest this script writes.
 
 STONE_BASE = {
  'abomasnow':'Abomasite','absol':'Absolite','aerodactyl':'Aerodactylite','aggron':'Aggronite',

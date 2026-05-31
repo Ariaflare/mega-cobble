@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:chesnaught",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 88,
+        "attack": 137,
+        "defence": 172,
+        "special_attack": 74,
+        "special_defence": 115,
+        "speed": 44
+      },
+      "primaryType": "grass",
+      "abilities": [
+        "bulletproof"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Chesnaughtite",
+      "secondaryType": "fighting"
+    }
+  ]
+}

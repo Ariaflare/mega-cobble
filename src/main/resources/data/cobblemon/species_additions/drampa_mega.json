@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:drampa",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 78,
+        "attack": 85,
+        "defence": 110,
+        "special_attack": 160,
+        "special_defence": 116,
+        "speed": 36
+      },
+      "primaryType": "normal",
+      "abilities": [
+        "berserk"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Drampanite",
+      "secondaryType": "dragon"
+    }
+  ]
+}

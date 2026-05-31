@@ -1,0 +1,25 @@
+{
+  "target": "cobblemon:meowstic",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 74,
+        "attack": 48,
+        "defence": 76,
+        "special_attack": 143,
+        "special_defence": 101,
+        "speed": 124
+      },
+      "primaryType": "psychic",
+      "abilities": [
+        "trace"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Meowsticite"
+    }
+  ]
+}

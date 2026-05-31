@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:excadrill",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 110,
+        "attack": 165,
+        "defence": 100,
+        "special_attack": 65,
+        "special_defence": 65,
+        "speed": 103
+      },
+      "primaryType": "ground",
+      "abilities": [
+        "piercingdrill"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Excadrite",
+      "secondaryType": "steel"
+    }
+  ]
+}

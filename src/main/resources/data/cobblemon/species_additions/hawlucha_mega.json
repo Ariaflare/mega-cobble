@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:hawlucha",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 78,
+        "attack": 137,
+        "defence": 100,
+        "special_attack": 74,
+        "special_defence": 93,
+        "speed": 118
+      },
+      "primaryType": "fighting",
+      "abilities": [
+        "noguard"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Hawluchanite",
+      "secondaryType": "flying"
+    }
+  ]
+}

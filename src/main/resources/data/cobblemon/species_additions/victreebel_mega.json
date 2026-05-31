@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:victreebel",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 80,
+        "attack": 125,
+        "defence": 85,
+        "special_attack": 135,
+        "special_defence": 95,
+        "speed": 70
+      },
+      "primaryType": "grass",
+      "abilities": [
+        "innardsout"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Victreebelite",
+      "secondaryType": "poison"
+    }
+  ]
+}

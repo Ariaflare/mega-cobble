@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:greninja",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 72,
+        "attack": 125,
+        "defence": 77,
+        "special_attack": 133,
+        "special_defence": 81,
+        "speed": 142
+      },
+      "primaryType": "water",
+      "abilities": [
+        "protean"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Greninjite",
+      "secondaryType": "dark"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:dragonite",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 91,
+        "attack": 124,
+        "defence": 115,
+        "special_attack": 145,
+        "special_defence": 125,
+        "speed": 100
+      },
+      "primaryType": "dragon",
+      "abilities": [
+        "multiscale"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Dragoninite",
+      "secondaryType": "flying"
+    }
+  ]
+}

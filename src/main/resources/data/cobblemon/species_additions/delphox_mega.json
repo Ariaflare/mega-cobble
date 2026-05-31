@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:delphox",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 75,
+        "attack": 69,
+        "defence": 72,
+        "special_attack": 159,
+        "special_defence": 125,
+        "speed": 134
+      },
+      "primaryType": "fire",
+      "abilities": [
+        "levitate"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Delphoxite",
+      "secondaryType": "psychic"
+    }
+  ]
+}

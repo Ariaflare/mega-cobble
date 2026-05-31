@@ -1,0 +1,25 @@
+{
+  "target": "cobblemon:floette",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 74,
+        "attack": 85,
+        "defence": 87,
+        "special_attack": 155,
+        "special_defence": 148,
+        "speed": 102
+      },
+      "primaryType": "fairy",
+      "abilities": [
+        "fairyaura"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Floettite"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:skarmory",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 65,
+        "attack": 140,
+        "defence": 110,
+        "special_attack": 40,
+        "special_defence": 100,
+        "speed": 110
+      },
+      "primaryType": "steel",
+      "abilities": [
+        "stalwart"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Skarmorite",
+      "secondaryType": "flying"
+    }
+  ]
+}

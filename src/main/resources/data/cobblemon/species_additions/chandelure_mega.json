@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:chandelure",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 60,
+        "attack": 75,
+        "defence": 110,
+        "special_attack": 175,
+        "special_defence": 110,
+        "speed": 90
+      },
+      "primaryType": "ghost",
+      "abilities": [
+        "infiltrator"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Chandelurite",
+      "secondaryType": "fire"
+    }
+  ]
+}

@@ -31,9 +31,11 @@ public final class MegaStones {
      * A registered Mega Stone and the species/form it unlocks.
      * {@code showdownId} is the lowercase-alphanumeric id the Pokémon Showdown sim uses for the
      * stone (e.g. "venusaurite", "charizarditex"), used to expose the stone to the battle sim.
+     * {@code requiredAspect} (nullable) restricts the stone to a specific form aspect — e.g.
+     * Floettite only works on the {@code flower-eternal} (Eternal Flower) Floette.
      */
     public record MegaStone(String stoneId, String name, String species, String form, String aspect,
-                            String showdownId, Item item) {}
+                            String requiredAspect, String showdownId, Item item) {}
 
     private static final List<MegaStone> ALL = new ArrayList<>();
     private static final Map<Item, MegaStone> BY_ITEM = new HashMap<>();
@@ -71,12 +73,14 @@ public final class MegaStones {
                 ResourceLocation.fromNamespaceAndPath(MegaCobble.MOD_ID, stoneId), item);
             String name = o.get("name").getAsString();
             String showdownId = name.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9]", "");
+            String requiredAspect = o.has("requiredAspect") ? o.get("requiredAspect").getAsString() : null;
             MegaStone stone = new MegaStone(
                 stoneId,
                 name,
                 o.get("species").getAsString(),
                 o.get("form").getAsString(),
                 o.get("aspect").getAsString(),
+                requiredAspect,
                 showdownId,
                 item);
             ALL.add(stone);

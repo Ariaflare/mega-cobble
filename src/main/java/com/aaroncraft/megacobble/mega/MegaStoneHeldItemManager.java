@@ -23,7 +23,16 @@ public class MegaStoneHeldItemManager implements HeldItemManager {
     public String showdownId(BattlePokemon pokemon) {
         ItemStack held = pokemon.getEffectedPokemon().heldItem();
         MegaStones.MegaStone stone = MegaStones.byItem(held.getItem());
-        return stone == null ? null : stone.showdownId();
+        if (stone == null) {
+            return null;
+        }
+        // Form-restricted stones (e.g. Floettite -> only the Eternal Flower Floette) are only
+        // exposed to the sim when the Pokémon has the required aspect, so other forms can't mega.
+        if (stone.requiredAspect() != null
+            && !pokemon.getEffectedPokemon().getAspects().contains(stone.requiredAspect())) {
+            return null;
+        }
+        return stone.showdownId();
     }
 
     @Override

@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:clefable",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 95,
+        "attack": 80,
+        "defence": 93,
+        "special_attack": 135,
+        "special_defence": 110,
+        "speed": 70
+      },
+      "primaryType": "fairy",
+      "abilities": [
+        "magicbounce"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Clefablite",
+      "secondaryType": "flying"
+    }
+  ]
+}

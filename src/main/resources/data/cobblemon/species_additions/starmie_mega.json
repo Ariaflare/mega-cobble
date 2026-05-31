@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:starmie",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 60,
+        "attack": 140,
+        "defence": 105,
+        "special_attack": 130,
+        "special_defence": 105,
+        "speed": 120
+      },
+      "primaryType": "water",
+      "abilities": [
+        "hugepower"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Starminite",
+      "secondaryType": "psychic"
+    }
+  ]
+}

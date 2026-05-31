@@ -327,5 +327,139 @@
     "species": "venusaur",
     "form": "Mega",
     "aspect": "mega"
+  },
+  {
+    "stone": "greninjite",
+    "name": "Greninjite",
+    "species": "greninja",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "meganiumite",
+    "name": "Meganiumite",
+    "species": "meganium",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "feraligite",
+    "name": "Feraligite",
+    "species": "feraligatr",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "dragoninite",
+    "name": "Dragoninite",
+    "species": "dragonite",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "excadrite",
+    "name": "Excadrite",
+    "species": "excadrill",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "chandelurite",
+    "name": "Chandelurite",
+    "species": "chandelure",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "chesnaughtite",
+    "name": "Chesnaughtite",
+    "species": "chesnaught",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "delphoxite",
+    "name": "Delphoxite",
+    "species": "delphox",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "clefablite",
+    "name": "Clefablite",
+    "species": "clefable",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "victreebelite",
+    "name": "Victreebelite",
+    "species": "victreebel",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "starminite",
+    "name": "Starminite",
+    "species": "starmie",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "skarmorite",
+    "name": "Skarmorite",
+    "species": "skarmory",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "froslassite",
+    "name": "Froslassite",
+    "species": "froslass",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "emboarite",
+    "name": "Emboarite",
+    "species": "emboar",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "golurkite",
+    "name": "Golurkite",
+    "species": "golurk",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "floettite",
+    "name": "Floettite",
+    "species": "floette",
+    "form": "Mega",
+    "aspect": "mega",
+    "requiredAspect": "flower-eternal"
+  },
+  {
+    "stone": "meowsticite",
+    "name": "Meowsticite",
+    "species": "meowstic",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "hawluchanite",
+    "name": "Hawluchanite",
+    "species": "hawlucha",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "drampanite",
+    "name": "Drampanite",
+    "species": "drampa",
+    "form": "Mega",
+    "aspect": "mega"
   }
 ]

@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:meganium",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 80,
+        "attack": 92,
+        "defence": 115,
+        "special_attack": 143,
+        "special_defence": 115,
+        "speed": 80
+      },
+      "primaryType": "grass",
+      "abilities": [
+        "megasol"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Meganiumite",
+      "secondaryType": "fairy"
+    }
+  ]
+}
