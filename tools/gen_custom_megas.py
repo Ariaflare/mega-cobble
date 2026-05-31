@@ -117,10 +117,12 @@ for e in ZA:
     json.dump({"parent":"minecraft:item/generated","textures":{"layer0":f"megacobble:item/{stone_id}"}},
               open(f"{ROOT}/assets/megacobble/models/item/{stone_id}.json","w"),indent=2)
     req = REQUIRED_ASPECT.get(sp)
-    sub = lambda asp: {"aspects":[asp],"poser":"cobblemon:substitute","model":"cobblemon:substitute.geo",
-                       "texture":"cobblemon:textures/pokemon/substitute.png","layers":[]}
-    variations=[sub(aspect)]
-    if req: variations.append(sub(req))   # show the restricted base form (e.g. Eternal Floette) as the doll too
+    def sub(asp, shiny=False):
+        return {"aspects":([asp,"shiny"] if shiny else [asp]),"poser":"cobblemon:substitute",
+                "model":"cobblemon:substitute.geo",
+                "texture":"cobblemon:textures/pokemon/substitute"+("_shiny" if shiny else "")+".png","layers":[]}
+    variations=[sub(aspect), sub(aspect, True)]
+    if req: variations += [sub(req), sub(req, True)]   # restricted base form (e.g. Eternal Floette) too
     json.dump({"species":f"cobblemon:{sp}","order":5,"variations":variations},
               open(f"{ROOT}/assets/cobblemon/bedrock/pokemon/resolvers/megacobble/{sp}.json","w"),indent=2)
     lang[f"item.megacobble.{stone_id}"]=stone_name

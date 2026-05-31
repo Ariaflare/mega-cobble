@@ -13,11 +13,31 @@
     },
     {
       "aspects": [
+        "mega",
+        "shiny"
+      ],
+      "poser": "cobblemon:substitute",
+      "model": "cobblemon:substitute.geo",
+      "texture": "cobblemon:textures/pokemon/substitute_shiny.png",
+      "layers": []
+    },
+    {
+      "aspects": [
         "flower-eternal"
       ],
       "poser": "cobblemon:substitute",
       "model": "cobblemon:substitute.geo",
       "texture": "cobblemon:textures/pokemon/substitute.png",
+      "layers": []
+    },
+    {
+      "aspects": [
+        "flower-eternal",
+        "shiny"
+      ],
+      "poser": "cobblemon:substitute",
+      "model": "cobblemon:substitute.geo",
+      "texture": "cobblemon:textures/pokemon/substitute_shiny.png",
       "layers": []
     }
   ]

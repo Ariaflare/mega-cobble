@@ -106,9 +106,15 @@ for (sp,form,aspect,pt,st) in FORMS:
 resdir=f"{ROOT}/assets/cobblemon/bedrock/pokemon/resolvers/megacobble"
 if os.path.isdir(resdir): shutil.rmtree(resdir)
 os.makedirs(resdir,exist_ok=True)
+def subvar(asp, shiny=False):
+    return {"aspects":([asp,"shiny"] if shiny else [asp]),"poser":"cobblemon:substitute",
+            "model":"cobblemon:substitute.geo",
+            "texture":"cobblemon:textures/pokemon/substitute"+("_shiny" if shiny else "")+".png","layers":[]}
 for sp,aspects in species_aspects.items():
-    variations=[{"aspects":[asp],"poser":"cobblemon:substitute","model":"cobblemon:substitute.geo",
-                 "texture":"cobblemon:textures/pokemon/substitute.png","layers":[]} for asp in aspects]
+    variations=[]
+    for asp in aspects:
+        variations.append(subvar(asp))         # normal substitute
+        variations.append(subvar(asp, True))   # shiny substitute (wins for shiny mons via last-match)
     json.dump({"species":f"cobblemon:{sp}","order":5,"variations":variations},
               open(f"{resdir}/{sp}.json","w"),indent=2)
 
