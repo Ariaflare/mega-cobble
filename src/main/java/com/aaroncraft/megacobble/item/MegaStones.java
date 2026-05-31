@@ -27,11 +27,17 @@ public final class MegaStones {
 
     private MegaStones() {}
 
-    /** A registered Mega Stone and the species/form it unlocks. */
-    public record MegaStone(String stoneId, String name, String species, String form, String aspect, Item item) {}
+    /**
+     * A registered Mega Stone and the species/form it unlocks.
+     * {@code showdownId} is the lowercase-alphanumeric id the Pokémon Showdown sim uses for the
+     * stone (e.g. "venusaurite", "charizarditex"), used to expose the stone to the battle sim.
+     */
+    public record MegaStone(String stoneId, String name, String species, String form, String aspect,
+                            String showdownId, Item item) {}
 
     private static final List<MegaStone> ALL = new ArrayList<>();
     private static final Map<Item, MegaStone> BY_ITEM = new HashMap<>();
+    private static final Map<String, MegaStone> BY_SHOWDOWN_ID = new HashMap<>();
 
     public static List<MegaStone> all() {
         return ALL;
@@ -40,6 +46,11 @@ public final class MegaStones {
     /** @return the Mega Stone this item is, or null if the item isn't a Mega Stone. */
     public static MegaStone byItem(Item item) {
         return BY_ITEM.get(item);
+    }
+
+    /** @return the Mega Stone with the given Showdown id, or null. */
+    public static MegaStone byShowdownId(String showdownId) {
+        return BY_SHOWDOWN_ID.get(showdownId);
     }
 
     public static void registerAll() {
@@ -58,15 +69,19 @@ public final class MegaStones {
             Item item = new Item(new Item.Properties().stacksTo(1));
             Registry.register(BuiltInRegistries.ITEM,
                 ResourceLocation.fromNamespaceAndPath(MegaCobble.MOD_ID, stoneId), item);
+            String name = o.get("name").getAsString();
+            String showdownId = name.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9]", "");
             MegaStone stone = new MegaStone(
                 stoneId,
-                o.get("name").getAsString(),
+                name,
                 o.get("species").getAsString(),
                 o.get("form").getAsString(),
                 o.get("aspect").getAsString(),
+                showdownId,
                 item);
             ALL.add(stone);
             BY_ITEM.put(item, stone);
+            BY_SHOWDOWN_ID.put(showdownId, stone);
         }
         MegaCobble.LOGGER.info("[Mega Cobble] Registered {} mega stones.", ALL.size());
     }

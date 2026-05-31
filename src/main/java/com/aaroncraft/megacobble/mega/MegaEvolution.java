@@ -3,17 +3,16 @@ package com.aaroncraft.megacobble.mega;
 import com.aaroncraft.megacobble.MegaCobble;
 import com.aaroncraft.megacobble.item.MegaStones;
 import com.aaroncraft.megacobble.item.ModItems;
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
-import com.cobblemon.mod.common.api.storage.party.PartyStore;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.FormData;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -23,85 +22,74 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Server-authoritative Mega Evolution. Looks up the Pokémon in the player's party,
- * validates the Mega Stone (held) and Key Stone (inventory), then swaps the Pokémon to its
- * mega form. Setting {@code form} fires Cobblemon's FormUpdatePacket, so the change syncs
- * to all clients automatically.
+ * Mega Evolution glue around Cobblemon's native (Showdown-driven) mega.
+ *
+ * <p>Showdown computes the real in-battle mega (stats, typing, ability) for the classic mega-capable
+ * species. Our job is two-fold:</p>
+ * <ul>
+ *   <li>{@link #syncKeyStone} — bridge our Key Stone item to Cobblemon's key-item gate so the native
+ *       mega button appears only when the player brought a Key Stone.</li>
+ *   <li>{@link #applyMega} — when Showdown mega evolves a Pokémon, mirror the form on the Minecraft
+ *       side (model / name), and {@link #revert} it when the battle ends.</li>
+ * </ul>
  */
 public final class MegaEvolution {
 
     private MegaEvolution() {}
+
+    /** Cobblemon's abstract key-item flag that {@code ShowdownActionRequest.sanitize()} checks for mega. */
+    private static final ResourceLocation KEY_STONE_KEY_ITEM =
+        ResourceLocation.fromNamespaceAndPath("cobblemon", "key_stone");
 
     /** Pre-mega state kept so a Pokémon can be reverted at battle end / faint / flee. */
     private static final Map<UUID, Original> MEGA_STATES = new ConcurrentHashMap<>();
 
     private record Original(Set<String> forcedAspects, MutableComponent nickname) {}
 
-    public static void evolve(ServerPlayer player, UUID pokemonUuid) {
-        MegaCobble.LOGGER.info("[Mega Cobble] Received mega-evolve request from {} for pokemon {}.",
-            player.getGameProfile().getName(), pokemonUuid);
-
-        // 1) Player must carry a Key Stone in their inventory.
+    /**
+     * Bridges our Key Stone item to Cobblemon's native mega gate. If the player is carrying a Key
+     * Stone in their inventory, grant the {@code cobblemon:key_stone} key item (so {@code sanitize()}
+     * lets the native mega gimmick through); otherwise remove it. Called at battle start.
+     */
+    public static void syncKeyStone(ServerPlayer player) {
         boolean hasKeyStone = player.getInventory().hasAnyMatching(stack -> stack.is(ModItems.KEY_STONE));
-        if (!hasKeyStone) {
-            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: no Key Stone in inventory.");
-            return;
+        Set<ResourceLocation> keyItems =
+            Cobblemon.INSTANCE.getPlayerDataManager().getGenericData(player).getKeyItems();
+        if (hasKeyStone) {
+            keyItems.add(KEY_STONE_KEY_ITEM);
+            MegaCobble.LOGGER.info("[Mega Cobble] {} brought a Key Stone -> mega enabled this battle.",
+                player.getGameProfile().getName());
+        } else {
+            keyItems.remove(KEY_STONE_KEY_ITEM);
         }
+    }
 
-        // 2) Find the requested Pokémon in the player's party.
-        PartyStore party = PlayerExtensionsKt.party(player);
-        Pokemon target = null;
-        for (Pokemon pokemon : party) {
-            if (pokemon != null && pokemon.getUuid().equals(pokemonUuid)) {
-                target = pokemon;
-                break;
-            }
-        }
-        if (target == null) {
-            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: pokemon {} not found in party.", pokemonUuid);
-            return;
-        }
-
-        // 3) The Pokémon must be holding a Mega Stone that matches its species.
-        ItemStack held = target.heldItem();
-        MegaStones.MegaStone stone = MegaStones.byItem(held.getItem());
+    /**
+     * Mirrors a Showdown mega evolution onto the Minecraft side: forces the mega aspect (which drives
+     * the rendered model and re-selects the mega form) and renames the Pokémon. Battle stats/typing/
+     * ability are Showdown's job; this is the visual + data form. The pre-mega state is recorded for
+     * {@link #revert}.
+     */
+    public static void applyMega(Pokemon target) {
+        MegaStones.MegaStone stone = MegaStones.byItem(target.heldItem().getItem());
         if (stone == null) {
-            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: {} is not holding a Mega Stone (held = {}).",
-                target.getSpecies().getName(), held.isEmpty() ? "nothing" : held.getItem());
             return;
         }
-        if (!stone.species().equalsIgnoreCase(target.getSpecies().getName())) {
-            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: {} cannot use {} (it belongs to {}).",
-                target.getSpecies().getName(), stone.name(), stone.species());
-            return;
-        }
-
-        // 4) Resolve the specific mega form this stone unlocks (e.g. "Mega", "Mega-X").
         FormData megaForm = findFormByName(target, stone.form());
         if (megaForm == null) {
-            MegaCobble.LOGGER.info("[Mega Cobble] Rejected: form '{}' not found for species {}.",
-                stone.form(), target.getSpecies().getName());
             return;
         }
-
-        // Remember the pre-mega state so we can revert it when the battle ends.
         MEGA_STATES.put(target.getUuid(),
             new Original(new HashSet<>(target.getForcedAspects()), target.getNickname()));
 
-        // 5) Apply the transformation.
-        //    Forcing the form's aspect (e.g. "mega") is what actually changes the rendered model:
-        //    Cobblemon resolves the model from the Pokémon's aspects, and forcedAspects' setter
-        //    recalculates aspects, updates the form, and syncs to the client automatically.
-        String oldForm = target.getForm().getName();
         Set<String> forced = new HashSet<>(target.getForcedAspects());
         forced.addAll(megaForm.getAspects());
         target.setForcedAspects(forced);
         target.setForm(megaForm);
-        target.setNickname(Component.literal(buildMegaName(target, megaForm)));
+        target.setNickname(Component.literal(buildMegaName(target.getSpecies().getName(), megaForm.getName())));
 
-        MegaCobble.LOGGER.info("[Mega Cobble] SUCCESS: {} ({}) mega evolved {} -> {} (nickname '{}').",
-            player.getGameProfile().getName(), target.getUuid(), oldForm, megaForm.getName(),
-            buildMegaName(target, megaForm));
+        MegaCobble.LOGGER.info("[Mega Cobble] In-battle mega: {} -> {} ({}).",
+            target.getSpecies().getName(), megaForm.getName(), target.getUuid());
     }
 
     /**
@@ -150,9 +138,5 @@ public final class MegaEvolution {
             suffix = "-" + formName.substring(dash + 1).toUpperCase(Locale.ROOT); // "-X", "-Y", "-Z"
         }
         return "Mega-" + speciesName + suffix;
-    }
-
-    public static String buildMegaName(Pokemon pokemon, FormData megaForm) {
-        return buildMegaName(pokemon.getSpecies().getName(), megaForm.getName());
     }
 }
