@@ -1,0 +1,45 @@
+# --- Cobblemon base jar (135 MB, provided locally, NOT committed) ---
+Cobblemon-fabric-*.jar
+/libs/
+
+# --- graphify (knowledge-graph tooling) ---
+# Outputs now live in the parent (E:\mod dev\graphify-out), kept out of this repo.
+# These entries are defensive in case graphify is ever run from inside the repo.
+graphify-out/
+.graphify_*
+
+# --- Claude Code (local settings / working files) ---
+# Moved to the parent (E:\mod dev\.claude); ignore if Claude recreates one here.
+.claude/
+CLAUDE.local.md
+
+# --- fabric-loom / gradle build output ---
+.gradle/
+build/
+out/
+classes/
+.loom-cache/
+run/
+remappedSrc/
+
+# --- IDEA ---
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# --- Eclipse ---
+.classpath
+.project
+.settings/
+bin/
+
+# --- VS Code ---
+.vscode/
+
+# --- OS noise ---
+.DS_Store
+Thumbs.db
+
+# Keep the Gradle wrapper jar tracked
+!gradle/wrapper/gradle-wrapper.jar

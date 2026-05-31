@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "megacobble",
+	"version": "${version}",
+	"name": "Mega Cobble",
+	"description": "Adds Mega Evolution to Cobblemon. Proof of concept.",
+	"authors": [
+		"AaronCraft30"
+	],
+	"contact": {},
+	"license": "ARR",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.aaroncraft.megacobble.MegaCobble"
+		],
+		"client": [
+			"com.aaroncraft.megacobble.client.MegaCobbleClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.17.2",
+		"minecraft": "1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"cobblemon": ">=1.7.3"
+	},
+	"suggests": {}
+}
