@@ -51,3 +51,6 @@ Thumbs.db
 
 # Keep the Gradle wrapper jar tracked
 !gradle/wrapper/gradle-wrapper.jar
+
+# --- local test server (Fabric server + Cobblemon + the mod jar; large, runtime only) ---
+test-server/
