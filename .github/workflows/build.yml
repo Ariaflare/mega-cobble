@@ -1,0 +1,71 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]        # push a tag like v0.2.0 for a versioned release
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:       # lets you trigger a build manually from the Actions tab
+
+# Needed so the workflow can create/update releases.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      # gradle.properties pins a machine-specific JDK path for local Windows builds; drop it so
+      # Gradle uses this runner's JDK 21 (provided by setup-java via JAVA_HOME).
+      - name: Use the runner's JDK
+        run: sed -i '/org.gradle.java.home/d' gradle.properties
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build
+        run: ./gradlew build --no-daemon --stacktrace
+
+      - name: Locate the mod jar
+        id: jar
+        run: |
+          JAR=$(ls build/libs/megacobble-*.jar | grep -vE '\-(sources|dev)\.jar$' | head -n1)
+          echo "Built mod jar: $JAR"
+          cp "$JAR" megacobble-latest.jar
+          echo "versioned=$JAR" >> "$GITHUB_OUTPUT"
+
+      # Every build (incl. PRs) leaves a downloadable artifact on the Actions run page.
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: megacobble-jar
+          path: build/libs/megacobble-*.jar
+
+      # On a push to main: keep a rolling "latest" release whose asset is always the freshest jar.
+      # Stable link: https://github.com/<owner>/<repo>/releases/download/latest/megacobble-latest.jar
+      - name: Update rolling "latest" release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest build (main)
+          prerelease: true
+          files: megacobble-latest.jar
+
+      # On a version tag (v0.2.0, ...): a permanent versioned release with the versioned jar.
+      - name: Versioned release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.jar.outputs.versioned }}

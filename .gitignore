@@ -2,6 +2,11 @@
 Cobblemon-fabric-*.jar
 /libs/
 
+# --- Base Cobblemon Pokémon models copied in for mega modelling work ---
+# Cobblemon's own art (models/textures/animations/posers/resolvers) used only as a
+# local working reference in Blockbench; NOT our content, NOT shipped. Same policy as the jar.
+model-workspace/
+
 # --- graphify (knowledge-graph tooling) ---
 # Outputs now live in the parent (E:\mod dev\graphify-out), kept out of this repo.
 # These entries are defensive in case graphify is ever run from inside the repo.

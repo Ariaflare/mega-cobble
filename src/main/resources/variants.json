@@ -1,0 +1,38 @@
+{
+  "_comment": "Named visual variants for /megacobble variant. Each applies its 'aspects' as forced aspects; resolvers map aspect combinations to model/texture/animation. kind: 'look' = bundled (model+texture+animation), 'model'/'texture'/'animation' = independent axis that layers over a look.",
+  "variants": [
+    {
+      "id": "mega",
+      "label": "Mega",
+      "kind": "look",
+      "aspects": [
+        "mega"
+      ]
+    },
+    {
+      "id": "mega_x",
+      "label": "Mega X",
+      "kind": "look",
+      "aspects": [
+        "mega_x"
+      ]
+    },
+    {
+      "id": "mega_y",
+      "label": "Mega Y",
+      "kind": "look",
+      "aspects": [
+        "mega_y"
+      ]
+    },
+    {
+      "id": "blastoise_skin",
+      "label": "Blastoise Skin",
+      "kind": "look",
+      "species": "venusaur",
+      "aspects": [
+        "blastoise_skin"
+      ]
+    }
+  ]
+}
