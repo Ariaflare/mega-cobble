@@ -1,5 +1,7 @@
 # Mega Cobble
 
+[![Build](https://github.com/Ariaflare/mega-cobble/actions/workflows/build.yml/badge.svg)](https://github.com/Ariaflare/mega-cobble/actions/workflows/build.yml)
+
 A Fabric add-on that brings **Mega Evolution** to
 [Cobblemon](https://cobblemon.com/) — including a data-driven pipeline for adding
 **custom megas**.
@@ -8,6 +10,22 @@ A Fabric add-on that brings **Mega Evolution** to
 > megas run through Cobblemon's bundled Pokémon Showdown sim, so they're **real in-battle
 > transformations** (correct stats, typing, and ability), not cosmetic-only. The same
 > pipeline can add fully custom megas (see *Adding a custom Mega* below).
+
+## Download
+
+- **[⬇ Latest jar](https://github.com/Ariaflare/mega-cobble/releases/download/latest/megacobble-latest.jar)**
+  — `megacobble-latest.jar`, rebuilt on every push to `main`.
+- **[All releases](https://github.com/Ariaflare/mega-cobble/releases)** — tagged `v*` versions get a
+  permanent jar.
+
+It's a Fabric **add-on**, so drop it in your `mods/` folder alongside its dependencies — it won't
+launch without them:
+
+1. [Fabric Loader](https://fabricmc.net/use/installer/)
+2. [Fabric API](https://modrinth.com/mod/fabric-api)
+3. [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin)
+4. [Cobblemon](https://modrinth.com/mod/cobblemon) **1.7.3** (Minecraft 1.21.1)
+5. this jar
 
 ## Features
 
@@ -235,6 +253,7 @@ src/main/resources/
 tools/gen_megastones.py           classic stones: substitute resolvers + megastones.json manifest
 tools/gen_custom_megas.py         Z-A / custom megas: species_additions, abilities, sim defs, resolvers
 tools/gen_look.py                 scaffold a custom look (resolver + catalog) for an existing species
+tools/release.py                  version manager: bump mod_version, commit, and tag a release
 ```
 
 ## Building & running
@@ -245,6 +264,24 @@ JDK 21 on your PATH, then:
 .\gradlew.bat build        # build the jar (lands in build/libs/)
 .\gradlew.bat runClient    # dev client with the mod + Cobblemon
 ```
+
+## Releasing
+
+`mod_version` in `gradle.properties` is the single source of truth (jar name, in-mod version, and the
+GitHub release). **`tools/release.py`** bumps it, commits, and tags `vX.Y.Z`; pushing the tag triggers
+the GitHub Actions **versioned release**. (Pushes to `main` separately refresh the rolling
+[`latest`](https://github.com/Ariaflare/mega-cobble/releases) jar.)
+
+```bash
+python tools/release.py                # show current version + recent tags
+python tools/release.py patch          # 0.1.0 -> 0.1.1  (bug fixes)
+python tools/release.py minor          # 0.1.0 -> 0.2.0  (new features)
+python tools/release.py major          # 0.1.0 -> 1.0.0  (breaking / stable)
+python tools/release.py 0.3.0          # set an explicit version
+python tools/release.py minor --push   # also push commit + tag (kicks off the release)
+```
+
+It refuses to run on a dirty tree, so commit your work (and any changelog notes) first.
 
 ## Build notes
 
