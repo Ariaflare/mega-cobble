@@ -1,5 +1,6 @@
 package com.aaroncraft.megacobble.mega;
 
+import com.aaroncraft.megacobble.item.MegaItems;
 import com.aaroncraft.megacobble.item.MegaStones;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
@@ -22,7 +23,7 @@ public class MegaStoneHeldItemManager implements HeldItemManager {
     @Override
     public String showdownId(BattlePokemon pokemon) {
         ItemStack held = pokemon.getEffectedPokemon().heldItem();
-        MegaStones.MegaStone stone = MegaStones.byItem(held.getItem());
+        MegaStones.MegaStone stone = MegaStones.byCustomData(held);
         if (stone == null) {
             return null;
         }
@@ -45,7 +46,7 @@ public class MegaStoneHeldItemManager implements HeldItemManager {
     public void give(BattlePokemon pokemon, String showdownId) {
         MegaStones.MegaStone stone = MegaStones.byShowdownId(showdownId);
         if (stone != null) {
-            pokemon.getEffectedPokemon().swapHeldItem(new ItemStack(stone.item()), false, false);
+            pokemon.getEffectedPokemon().swapHeldItem(MegaItems.createStone(stone), false, false);
         }
     }
 

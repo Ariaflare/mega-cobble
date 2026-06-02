@@ -20,6 +20,15 @@
       "model": "cobblemon:substitute.geo",
       "texture": "cobblemon:textures/pokemon/substitute_shiny.png",
       "layers": []
+    },
+    {
+      "aspects": [
+        "blastoise_skin"
+      ],
+      "poser": "cobblemon:blastoise",
+      "model": "cobblemon:blastoise.geo",
+      "texture": "cobblemon:textures/pokemon/0009_blastoise/blastoise.png",
+      "layers": []
     }
   ]
 }

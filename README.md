@@ -12,8 +12,12 @@ A Fabric add-on that brings **Mega Evolution** to
 ## Features
 
 - **47 classic Mega Stones** (every Gen 6 / ORAS mega, incl. Charizard & Mewtwo X/Y) and
-  **18 Legends Z-A** megas, plus a **Key Stone**, grouped in a dedicated **Mega Stones**
-  creative tab.
+  **18 Legends Z-A** megas, plus a **Key Stone**. They're **vanilla items carrying a
+  `minecraft:custom_data` tag** (not registered custom items), so they work on a server even for
+  clients without the mod; get them with **`/megacobble give <stone> [count]`**. The mod ships **no
+  stone textures** — each stone carries a `custom_model_data` (Key Stone = 1, manifest stones = 2…) so
+  an external resource pack can re-skin it, exactly like mon skins. Without a pack a stone renders as
+  the plain base item.
 - **Native, in-battle Mega Evolution** — give a Pokémon its matching Mega Stone as a held
   item and carry a Key Stone; Cobblemon's own mega button appears in the Fight menu, and
   choosing a move + mega runs the real Showdown mega (stats / typing / ability).
@@ -22,14 +26,89 @@ A Fabric add-on that brings **Mega Evolution** to
 - A **data-driven custom-mega system**: classic megas reuse Cobblemon's bundled sim data;
   Z-A / custom megas add their form, stone, and (if needed) a brand-new ability through a
   generator — no Java changes required.
-- Visuals use the **substitute doll** as a placeholder (no per-mega 3D models yet).
+- All megas currently render the **substitute doll** placeholder. (A custom **Mega Venusaur** 3D
+  model + animation was built in Blockbench; it now lives outside the mod in `../megacobble-assets/`
+  and isn't shipped while the visual pipeline is reworked.)
+- **World (out-of-battle) Mega Evolution** — mega-evolve a Pokémon for overworld exploration via
+  a **"Mega Evolve" option on the shift-right-click interaction wheel** (modded clients) or the
+  **`/megacobble worldmega`** command (any client, incl. vanilla on a server). You can **ride** the
+  Pokémon in its mega form, and it automatically **reverts when a battle starts** so the real
+  in-battle Showdown mega takes over. Gated like a battle mega (Key Stone + held Mega Stone) and
+  fully configurable.
+- **Command-driven, skin-agnostic looks** — the mod only sets a Pokémon's **aspects**; resolvers
+  (the mod's substitute doll by default, or any external datapack/pack) decide the visual. Ops apply
+  **named looks** (`/megacobble variant`) or **any aspect / datapack skin** (`/megacobble skin`), and
+  an external resolver with `order > 5` overrides the default automatically — no client mod required.
+
+## Commands
+
+Everything lives under **`/megacobble`** — see **[COMMANDS.md](COMMANDS.md)** for the full reference
+(syntax, permissions, targeting, and examples). In brief:
+
+- **`worldmega`** — out-of-battle Mega Evolution (available to all players, item-gated)
+- **`give`** — get a Mega Stone or the Key Stone *(op)*
+- **`variant`** — apply/list/reload named looks *(op)*
+- **`skin`** — force any aspect, including datapack-defined skins *(op)*
+- **`config`** — view/edit the world-mega settings *(op)*
+
+## World Mega Evolution (exploration)
+
+Mega Evolution outside of battle is purely the Minecraft-side form + look (no battle stats) — for
+exploring, riding, and screenshots.
+
+- **Trigger it** by shift-right-clicking your sent-out Pokémon and picking **Mega Evolve** on the
+  wheel (requires the mod on the client), or with **`/megacobble worldmega [on|off|toggle]`** while
+  looking at it (or **`… slot <1-6>`** to target a party slot — works for any client).
+- By default it's gated exactly like a battle mega: you must carry a **Key Stone** and the Pokémon
+  must hold its **Mega Stone**. It **reverts automatically when a battle starts**.
+- **Riding** in mega form works for any species that's normally rideable. (Cobblemon ships Mega forms
+  with an empty seat list, so we drop that override at mega time to inherit the base species' riding
+  seats.) Setting **`allowRideInMega: false`** hides the "Mega Evolve" option from the wheel, so
+  players can't mega-then-ride via the wheel (the command still works).
+- The wheel option uses Cobblemon's **Mega button icon** and is **greyed out** unless the Pokémon is
+  holding its matching Mega Stone.
+- **Configure** it in `config/megacobble.json` or live with **`/megacobble config <key> <true|false>`**
+  (op only). Keys: `worldMegaEnabled`, `requireKeyStone`, `requireMegaStone`, `allowRideInMega`,
+  `revertOnBattleStart`.
+
+## Changing a Pokémon's look by command
+
+The mod is a **skin-agnostic framework**: it only ever sets a Pokémon's **aspects** (synced
+server→client), and a **resolver** maps an aspect set to a model / texture / animation. Resolvers live
+in a resource pack (the mod jar, or any external pack), so visuals reach vanilla clients via a pack —
+no client mod needed. All of these commands are **op-gated** (level 2); the default target is the
+Pokémon you're looking at, or `slot <1-6>` for a party slot.
+
+**Named looks — a curated catalog:**
+```
+/megacobble variant list                                 # show the catalog
+/megacobble variant apply|remove <variant> [slot <1-6>]  # tab-completed
+/megacobble variant reload                               # re-read the catalog after editing it
+```
+Looks live in the bundled `variants.json` plus an optional editable overlay at
+`config/megacobble/variants.json` (same-id entries override) — each is `id`, `label`, `kind`
+(`look` = bundled model+texture+animation), `species`, `aspects`. Built-in: `mega`, `mega_x`,
+`mega_y`. Scaffold a new look against an existing Cobblemon model **or** custom pack assets with
+`tools/gen_look.py`.
+
+**Any skin aspect — one Pokémon or a whole species:**
+```
+/megacobble skin set <aspect> [slot <1-6>]   # force a skin on one Pokémon
+/megacobble skin set <aspect> all            # GLOBAL: every Pokémon of the looked-at species
+/megacobble skin clear [slot <1-6>] | all    # reset one Pokémon, or remove the global skin
+```
+`set … all` applies the skin to **every** Pokémon of a species (loaded, boxed, or caught later) through
+a server-side **aspect provider** — persisted to `config/megacobble/global_skins.json` and synced to
+clients. Because the mod only sets aspects, an installed datapack/resource-pack resolver with
+`order > 5` **overrides the default (substitute doll) skin automatically** — `skin set` applies a
+specific aspect, `skin clear` releases it.
 
 ## How it works
 
 Everything runs through Cobblemon's existing systems — no edits to Cobblemon's code:
 
-- A custom `HeldItemManager` exposes our `megacobble:` Mega Stones to the Showdown sim
-  (Cobblemon's default only handles its own namespace), so the sim sets `canMegaEvo`.
+- A custom `HeldItemManager` exposes our Mega Stones — vanilla items tagged with `custom_data` — to
+  the Showdown sim, identifying each stone by its tag, so the sim sets `canMegaEvo`.
 - At battle start, a bridge grants the `cobblemon:key_stone` key-item while the player
   carries a Key Stone, so Cobblemon's native gate (`sanitize()`) lets the mega button
   through.
@@ -50,8 +129,9 @@ the gaps:
 
 ## Using it in-game
 
-1. Get the items from the **Mega Stones** creative tab, or e.g.
-   `/give @s megacobble:charizardite_x` and `/give @s megacobble:key_stone`.
+1. Get the items with **`/megacobble give charizardite_x`** and **`/megacobble give key_stone`**
+   (tab-completes every stone id; optional count). They're `amethyst_shard`s tagged with
+   `custom_data` until the resource pack re-skins them.
 2. Give a Pokémon its matching Mega Stone in its **held-item** slot.
 3. Keep a **Key Stone** in your inventory and start a battle.
 4. On the Fight screen, use the mega button, pick a move, and it Mega Evolves.
@@ -72,6 +152,19 @@ data files and running the generators — no code changes.
    ```
    - `species` is the lowercase Cobblemon species id (it must already exist in Cobblemon — a
      brand-new Pokémon would have to be added first).
+   - **`form` + `aspect` are where you declare an X / Y / Z variant.** A single mega is
+     `"form": "Mega"`, `"aspect": "mega"`. For variants, set them as a pair:
+
+     | Variant | `form`    | `aspect`  | In-game name        |
+     | ------- | --------- | --------- | ------------------- |
+     | Mega    | `Mega`    | `mega`    | `Mega-<Species>`    |
+     | Mega X  | `Mega-X`  | `mega_x`  | `Mega-<Species>-X`  |
+     | Mega Y  | `Mega-Y`  | `mega_y`  | `Mega-<Species>-Y`  |
+     | Mega Z  | `Mega-Z`  | `mega_z`  | `Mega-<Species>-Z`  |
+
+     Add **one entry per variant** (so an X/Y mega is two entries with the same `species`). The
+     `aspect` is just the `form` lowercased with the `-` turned into `_`; it's what the resolver keys
+     on. (See Raichu's `Mega-X` / `Mega-Y` entries in `za_megas.json`.)
    - `ability` is a Showdown ability id. Use an existing one (`adaptability`, `protean`, …)
      or a brand-new one you define in step 3.
 
@@ -92,8 +185,10 @@ data files and running the generators — no code changes.
    python tools/gen_megastones.py
    python tools/gen_custom_megas.py
    ```
-   This writes the species-addition form, the stone (manifest entry + texture + model +
-   lang), the substitute resolver, the sim item injection, and any new ability file + lang.
+   This writes the species-addition form, the **manifest entry** (`megastones.json` — the stone is a
+   vanilla item + custom_data, so **no item texture/model/lang** is generated), the substitute
+   resolver, the sim item injection, and any new ability file + its summary lang. The generators **do
+   not** touch the hand-maintained command lang in `en_us.json` (they only add ability keys, in UTF-8).
 
 5. **Build & run.** `./gradlew runClient`. The held-item manager, key-item bridge, sim
    injector, and form mirror all pick it up automatically — give the Pokémon its stone,
@@ -119,21 +214,27 @@ data files and running the generators — no code changes.
 src/main/java/com/aaroncraft/megacobble/
   MegaCobble.java                 common entrypoint: registration + battle event hooks
   client/MegaCobbleClient.java    client entrypoint
-  item/ModItems.java              Key Stone + the Mega Stones creative tab
-  item/MegaStones.java            loads megastones.json, registers a stone item per entry
-  mega/MegaEvolution.java         key-item bridge, in-battle form mirror, revert
+  item/MegaItems.java             builds/reads stones as vanilla items + custom_data
+  item/MegaStones.java            loads megastones.json; stone lookup by id / custom_data / showdown id
+  command/MegaCobbleCommands.java /megacobble give | variant | skin | worldmega | config
+  config/MegaCobbleConfig.java    config/megacobble.json (world-mega toggles)
+  variant/MegaVariants.java       loads the look catalog (bundled variants.json + config overlay)
+  net/RequestWorldMegaPayload.java   client→server world-mega request (wheel button)
+  mega/MegaEvolution.java         key-item bridge, in-battle + world mega, skins, revert
   mega/MegaStoneHeldItemManager.java   exposes our stones to the Showdown sim
   mega/MegaShowdownInjector.java  injects custom mega-stone item defs into the sim
 src/main/resources/
   megastones.json                 manifest: stone -> species / form / aspect
+  variants.json                   the bundled look catalog
   za_megas.json                   Legends Z-A / custom mega data (types, abilities, stats)
   custom_mega_showdown.json       mega-stone item defs injected into the sim
   data/cobblemon/species_additions/   the mega forms (Z-A / custom)
   data/megacobble/abilities/      new abilities as Cobblemon datapack ability JS
-  assets/megacobble/...           item models, textures, lang
+  assets/megacobble/...           lang + the interaction-wheel icon (stone art lives in ../megacobble-assets/)
   assets/cobblemon/bedrock/pokemon/resolvers/megacobble/   substitute-doll resolvers
-tools/gen_megastones.py           classic stones: textures, models, resolvers, lang, manifest
-tools/gen_custom_megas.py         Z-A / custom megas: species_additions, abilities, sim defs, assets
+tools/gen_megastones.py           classic stones: substitute resolvers + megastones.json manifest
+tools/gen_custom_megas.py         Z-A / custom megas: species_additions, abilities, sim defs, resolvers
+tools/gen_look.py                 scaffold a custom look (resolver + catalog) for an existing species
 ```
 
 ## Building & running
@@ -163,8 +264,9 @@ and kept only as a local reference.
 
 ## Limitations / roadmap
 
-- Mega forms render as the **substitute doll** placeholder; real per-mega models are a
-  future art task.
+- **All megas render the substitute doll** for now. The custom Mega Venusaur model/animation was
+  moved out to `../megacobble-assets/` (not shipped) while the visual delivery is reworked toward a
+  command-driven, resource-pack-based pipeline.
 - **Mega Sol** (Meganium) is a registered stub — the mega works, but the ability has no
   effect yet (a faithful weather-treatment implementation is TODO).
 - **Mega Floette** is deferred — it should only apply to AZ's Eternal-Flower Floette
@@ -176,6 +278,50 @@ and kept only as a local reference.
 
 Newest first.
 
+- **Generator cleanup (Track F)** — `gen_megastones.py` / `gen_custom_megas.py` now match the
+  custom_data architecture: they stop emitting registered-item textures/models/lang (stones are
+  vanilla items skinned by an external pack) and **no longer overwrite the hand-maintained command
+  lang** — the classic generator doesn't touch `en_us.json`, and the custom one only adds ability
+  keys (now written as UTF-8, fixing an `é`/`—` corruption). So "Adding a custom Mega" is a clean
+  one-command flow again. Removed the dead `item.megacobble.*` lang keys.
+- **Externalised all visuals (skins + stones)** — the mod is a skin-agnostic framework now. Mon skins
+  are driven by aspects → resolvers (substitute doll default), and any datapack/resource-pack resolver
+  with `order > 5` overrides them; an op applies a custom skin with **`/megacobble skin set <aspect>`**
+  (`clear` resets). Stone textures/models were moved out to `../megacobble-assets/`; stones keep their
+  `custom_data` identity + a `custom_model_data` hook for an external pack to re-skin.
+- **Parked the Mega Venusaur model** — moved the custom Mega Venusaur model/texture/animation/poser,
+  the Blockbench `model-dev/` project, and the base-model `model-workspace/` reference copies out of
+  the mod into `../megacobble-assets/`, and reverted Venusaur's resolver to the **substitute doll**.
+  The visual pipeline is being reworked toward changing a Pokémon's model/texture by command and
+  adding custom mons by command.
+- **Server-authoritative items (vanilla + `custom_data`)** — Mega Stones and the Key Stone are no
+  longer registered items; they're vanilla `amethyst_shard`s carrying a `minecraft:custom_data` tag
+  (`{megacobble:{id:"venusaurite"}}`) plus an `item_name`. The Showdown bridge, key-item gate, world
+  mega, and wheel all identify stones by tag instead of item id, so the stones work on a server for
+  **clients without the mod** (a resource pack will re-skin them by `custom_model_data` next). Dropped
+  the registered items + creative tab; added **`/megacobble give <stone> [count]`** and a
+  **named-variant system** (`variants.json` + `/megacobble variant`).
+- **World (out-of-battle) Mega Evolution** — mega-evolve for overworld exploration and riding via a
+  "Mega Evolve" entry on Cobblemon's shift-right-click interaction wheel (hooked through
+  `POKEMON_INTERACTION_GUI_CREATION`, modded clients only) or the new server-authoritative
+  `/megacobble worldmega` command (universal, incl. vanilla clients). Mega forms inherit the base
+  species' rideability, so you can ride them while mega'd; world megas revert at battle start so the
+  Showdown in-battle mega applies cleanly. Gated like a battle mega (Key Stone + held Mega Stone) and
+  configurable via `config/megacobble.json` / `/megacobble config` (`worldMegaEnabled`,
+  `requireKeyStone`, `requireMegaStone`, `allowRideInMega`, `revertOnBattleStart`).
+- **Mega Venusaur 3D model** — the first real per-mega model, replacing the substitute doll.
+  Custom-built in Blockbench on top of the base Venusaur rig: 6 big weeping fronds (each on its
+  own tree2-side origin, lengthened by tiling the mid-leaf texture) + a 6-frond low drooping
+  collar, plus a forehead flower and a back flower (two-layer petals, mirror-built). Foliage
+  motion is a **procedural MoLang** `fronds_droop` animation (baseline = posed droop, 60°/segment
+  phase lag, amplitude rising to the tip) authored the same way as base Cobblemon idles, layered
+  with the base body idle. Wired through a `megacobble` model + poser + animation and a resolver
+  that maps Venusaur's `mega` aspect to it.
+- **Base-model workspace** — copied the base Cobblemon model, texture, animation, poser, and
+  resolver files for every mega-capable species (61 of the 64; **abomasnow / audino / diancie
+  are not yet modelled in Cobblemon 1.7.3**) into a git-ignored `model-workspace/`, grouped by
+  Pokédex-numbered folder (e.g. `0003_venusaur/`). These are local working references for
+  building the real mega models in Blockbench — Cobblemon's own art, not shipped.
 - **Shiny support** — mega forms (and the Eternal Floette base) render the **shiny**
   substitute doll for shiny Pokémon, the normal doll otherwise.
 - **18 Legends Z-A megas** via a data-driven custom-mega pipeline (`species_additions` +

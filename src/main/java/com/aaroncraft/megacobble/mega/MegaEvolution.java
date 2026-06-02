@@ -1,8 +1,9 @@
 package com.aaroncraft.megacobble.mega;
 
 import com.aaroncraft.megacobble.MegaCobble;
+import com.aaroncraft.megacobble.config.MegaCobbleConfig;
+import com.aaroncraft.megacobble.item.MegaItems;
 import com.aaroncraft.megacobble.item.MegaStones;
-import com.aaroncraft.megacobble.item.ModItems;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
@@ -14,7 +15,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +47,15 @@ public final class MegaEvolution {
     /** Pre-mega state kept so a Pokémon can be reverted at battle end / faint / flee. */
     private static final Map<UUID, Original> MEGA_STATES = new ConcurrentHashMap<>();
 
+    /** Pre-mega state for out-of-battle ("world") megas; kept separate from the in-battle states. */
+    private static final Map<UUID, Original> WORLD_MEGA_STATES = new ConcurrentHashMap<>();
+
     private record Original(Set<String> forcedAspects, MutableComponent nickname) {}
+
+    /** Outcome of a world (out-of-battle) Mega Evolution request, for command / packet feedback. */
+    public enum WorldMegaResult {
+        APPLIED, REVERTED, ALREADY_MEGA, NOT_MEGA, DISABLED, NO_KEY_STONE, NO_MEGA_STONE, NO_MEGA_FORM
+    }
 
     /**
      * Bridges our Key Stone item to Cobblemon's native mega gate. If the player is carrying a Key
@@ -52,7 +63,7 @@ public final class MegaEvolution {
      * lets the native mega gimmick through); otherwise remove it. Called at battle start.
      */
     public static void syncKeyStone(ServerPlayer player) {
-        boolean hasKeyStone = player.getInventory().hasAnyMatching(stack -> stack.is(ModItems.KEY_STONE));
+        boolean hasKeyStone = player.getInventory().hasAnyMatching(MegaItems::isKeyStone);
         Set<ResourceLocation> keyItems =
             Cobblemon.INSTANCE.getPlayerDataManager().getGenericData(player).getKeyItems();
         if (hasKeyStone) {
@@ -71,7 +82,7 @@ public final class MegaEvolution {
      * {@link #revert}.
      */
     public static void applyMega(Pokemon target) {
-        MegaStones.MegaStone stone = MegaStones.byItem(target.heldItem().getItem());
+        MegaStones.MegaStone stone = MegaStones.byCustomData(target.heldItem());
         if (stone == null) {
             return;
         }
@@ -115,6 +126,162 @@ public final class MegaEvolution {
                 revert(battlePokemon.getEffectedPokemon());
             }
         }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // Out-of-battle ("world") Mega Evolution — exploration / riding. Purely the Minecraft-side form
+    // + visual (no Showdown), gated like a battle mega (Key Stone + held Mega Stone) and reverted
+    // when a battle starts so the real in-battle Showdown mega can take over cleanly.
+    // ---------------------------------------------------------------------------------------------
+
+    /** @return true if the Pokémon is currently world-mega'd (mega applied outside of battle). */
+    public static boolean isWorldMega(Pokemon pokemon) {
+        return WORLD_MEGA_STATES.containsKey(pokemon.getUuid());
+    }
+
+    /** Toggles world mega: reverts if already world-mega'd, otherwise tries to apply it. */
+    public static WorldMegaResult toggleWorldMega(ServerPlayer player, Pokemon target) {
+        if (isWorldMega(target)) {
+            revertWorldMega(target);
+            return WorldMegaResult.REVERTED;
+        }
+        return applyWorldMega(player, target);
+    }
+
+    /**
+     * Applies an out-of-battle Mega Evolution to the target, honouring the config gate (feature
+     * enabled, Key Stone carried, Mega Stone held). The mega form/aspect is forced on the Minecraft
+     * side — Cobblemon syncs it to the client and persists it — without touching the battle sim.
+     */
+    public static WorldMegaResult applyWorldMega(ServerPlayer player, Pokemon target) {
+        MegaCobbleConfig cfg = MegaCobbleConfig.get();
+        if (!cfg.worldMegaEnabled) {
+            return WorldMegaResult.DISABLED;
+        }
+        if (isWorldMega(target)) {
+            return WorldMegaResult.ALREADY_MEGA;
+        }
+        if (cfg.requireKeyStone && !playerHasKeyStone(player)) {
+            return WorldMegaResult.NO_KEY_STONE;
+        }
+        MegaStones.MegaStone stone = MegaStones.byCustomData(target.heldItem());
+        if (cfg.requireMegaStone && stone == null) {
+            return WorldMegaResult.NO_MEGA_STONE;
+        }
+        FormData megaForm = stone != null ? findFormByName(target, stone.form()) : firstMegaForm(target);
+        if (megaForm == null) {
+            return WorldMegaResult.NO_MEGA_FORM;
+        }
+        inheritRidingFromSpecies(megaForm);
+
+        WORLD_MEGA_STATES.put(target.getUuid(),
+            new Original(new HashSet<>(target.getForcedAspects()), target.getNickname()));
+
+        Set<String> forced = new HashSet<>(target.getForcedAspects());
+        forced.addAll(megaForm.getAspects());
+        target.setForcedAspects(forced);
+        target.setForm(megaForm);
+        target.setNickname(Component.literal(buildMegaName(target.getSpecies().getName(), megaForm.getName())));
+
+        MegaCobble.LOGGER.info("[Mega Cobble] World mega: {} -> {} ({}).",
+            target.getSpecies().getName(), megaForm.getName(), target.getUuid());
+        return WorldMegaResult.APPLIED;
+    }
+
+    /** Reverts a world-mega'd Pokémon to its pre-mega state. @return true if it was world-mega'd. */
+    public static boolean revertWorldMega(Pokemon pokemon) {
+        Original original = WORLD_MEGA_STATES.remove(pokemon.getUuid());
+        if (original == null) {
+            return false;
+        }
+        pokemon.setForcedAspects(original.forcedAspects());
+        pokemon.setNickname(original.nickname());
+        MegaCobble.LOGGER.info("[Mega Cobble] Reverted world mega {} ({}).",
+            pokemon.getSpecies().getName(), pokemon.getUuid());
+        return true;
+    }
+
+    /**
+     * Reverts world megas on every battling player's party at battle start (if enabled), so the
+     * in-battle Showdown mega path applies to the base form rather than an already-mega'd one.
+     */
+    public static void revertWorldMegasForBattle(Iterable<ServerPlayer> players) {
+        if (!MegaCobbleConfig.get().revertOnBattleStart) {
+            return;
+        }
+        for (ServerPlayer player : players) {
+            for (Pokemon pokemon : Cobblemon.INSTANCE.getStorage().getParty(player)) {
+                revertWorldMega(pokemon);
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // Named visual variants — the lever behind /megacobble variant. Forced aspects sync to the client
+    // and persist; resolvers map aspect combinations to model / texture / poser (independently, so a
+    // texture aspect can layer over a model aspect).
+    // ---------------------------------------------------------------------------------------------
+
+    /** Adds or removes all of a named variant's aspects at once. @return true if the set changed. */
+    public static boolean setVariant(Pokemon pokemon, List<String> aspects, boolean present) {
+        Set<String> forced = new HashSet<>(pokemon.getForcedAspects());
+        boolean changed = present ? forced.addAll(aspects) : forced.removeAll(aspects);
+        if (changed) {
+            pokemon.setForcedAspects(forced);
+        }
+        return changed;
+    }
+
+    /**
+     * Clears every forced aspect, releasing the Pokémon back to its default/calculated look (e.g. the
+     * substitute doll for a mega, or whatever an installed datapack's feature decides). Use this to
+     * undo a command-applied skin so a datapack can drive it again.
+     */
+    public static void clearForcedAspects(Pokemon pokemon) {
+        if (!pokemon.getForcedAspects().isEmpty()) {
+            pokemon.setForcedAspects(new HashSet<>());
+        }
+    }
+
+    /** @return true if the player is carrying a Key Stone in their inventory. */
+    public static boolean playerHasKeyStone(ServerPlayer player) {
+        return player.getInventory().hasAnyMatching(MegaItems::isKeyStone);
+    }
+
+    /** Mega forms already checked for the riding-seats patch (per-form, once). */
+    private static final Set<FormData> RIDING_PATCHED = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Cobblemon ships several Mega forms with an empty riding seat list, so they can't be ridden even
+     * when the base species can. Drop the form's riding override (its {@code _riding}) so it inherits
+     * the base species' riding — including its seats — letting players ride the Pokémon in mega form.
+     * No-op if the form is already rideable, or if the base species itself isn't rideable.
+     */
+    private static void inheritRidingFromSpecies(FormData megaForm) {
+        if (!RIDING_PATCHED.add(megaForm)) {
+            return;
+        }
+        try {
+            if (!megaForm.getRiding().getSeats().isEmpty()) {
+                return;
+            }
+            Field ridingField = FormData.class.getDeclaredField("_riding");
+            ridingField.setAccessible(true);
+            ridingField.set(megaForm, null);
+        } catch (Exception e) {
+            MegaCobble.LOGGER.warn("[Mega Cobble] Could not make {} rideable in its mega form.",
+                megaForm.getName(), e);
+        }
+    }
+
+    /** @return the species' first form whose name starts with "Mega" (case-insensitive), or null. */
+    private static FormData firstMegaForm(Pokemon pokemon) {
+        for (FormData form : pokemon.getSpecies().getForms()) {
+            if (form.getName().toLowerCase(Locale.ROOT).startsWith("mega")) {
+                return form;
+            }
+        }
+        return null;
     }
 
     /** Finds the form with the given name (case-insensitive), e.g. "Mega", "Mega-X". */

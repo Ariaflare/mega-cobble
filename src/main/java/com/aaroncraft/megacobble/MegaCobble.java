@@ -1,15 +1,32 @@
 package com.aaroncraft.megacobble;
 
-import com.aaroncraft.megacobble.item.ModItems;
+import com.aaroncraft.megacobble.command.MegaCobbleCommands;
+import com.aaroncraft.megacobble.config.MegaCobbleConfig;
+import com.aaroncraft.megacobble.item.MegaStones;
 import com.aaroncraft.megacobble.mega.MegaEvolution;
 import com.aaroncraft.megacobble.mega.MegaShowdownInjector;
 import com.aaroncraft.megacobble.mega.MegaStoneHeldItemManager;
+import com.aaroncraft.megacobble.net.RequestWorldMegaPayload;
+import com.aaroncraft.megacobble.skin.GlobalSkins;
+import com.aaroncraft.megacobble.variant.MegaVariants;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemProvider;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Locale;
+import java.util.UUID;
 
 /**
  * Mega Cobble - a Cobblemon add-on that adds Mega Evolution.
@@ -27,19 +44,35 @@ public class MegaCobble implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("[Mega Cobble] Initializing Mega Evolution for Cobblemon.");
 
-		ModItems.register();
+		MegaCobbleConfig.load();
+		MegaVariants.load();
+		MegaStones.load();
+		GlobalSkins.init();
 		MegaShowdownInjector.load();
+
+		// Networking + commands for out-of-battle ("world") Mega Evolution. The payload codec must be
+		// registered on both sides; the receiver and command tree are server-authoritative.
+		PayloadTypeRegistry.playC2S().register(RequestWorldMegaPayload.TYPE, RequestWorldMegaPayload.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(RequestWorldMegaPayload.TYPE, (payload, context) -> {
+			ServerPlayer player = context.player();
+			UUID entityId = payload.entityId();
+			player.getServer().execute(() -> handleWorldMegaRequest(player, entityId));
+		});
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+			MegaCobbleCommands.register(dispatcher));
 
 		// Expose our Mega Stones to the bundled Showdown sim (Cobblemon's default manager only
 		// handles cobblemon-namespace items). Higher priority than Cobblemon's LOWEST default.
 		HeldItemProvider.register(new MegaStoneHeldItemManager(), Priority.NORMAL);
 
 		// At battle start: inject custom-mega data into the sim (megas not in Cobblemon's bundled
-		// sim), and bridge each player's Key Stone item to Cobblemon's key-item gate so the native
-		// mega button is only enabled when they actually brought a Key Stone.
+		// sim), bridge each player's Key Stone item to Cobblemon's key-item gate so the native mega
+		// button is only enabled when they brought a Key Stone, and revert any out-of-battle ("world")
+		// megas so the real in-battle Showdown mega applies to the base form.
 		CobblemonEvents.BATTLE_STARTED_PRE.subscribe(event -> {
 			MegaShowdownInjector.injectAll();
 			event.getBattle().getPlayers().forEach(MegaEvolution::syncKeyStone);
+			MegaEvolution.revertWorldMegasForBattle(event.getBattle().getPlayers());
 		});
 
 		// When Showdown mega evolves a Pokémon, mirror the form change on the Minecraft side.
@@ -50,5 +83,27 @@ public class MegaCobble implements ModInitializer {
 		CobblemonEvents.BATTLE_VICTORY.subscribe(event -> MegaEvolution.revertBattle(event.getBattle()));
 		CobblemonEvents.BATTLE_FLED.subscribe(event -> MegaEvolution.revertBattle(event.getBattle()));
 		CobblemonEvents.BATTLE_FAINTED.subscribe(event -> MegaEvolution.revert(event.getKilled().getEffectedPokemon()));
+	}
+
+	/**
+	 * Handles a client's interaction-wheel "Mega Evolve" request: resolves the targeted Pokémon
+	 * entity, verifies the requester owns it, toggles its world mega, and reports the result on the
+	 * action bar. Runs on the server thread.
+	 */
+	private static void handleWorldMegaRequest(ServerPlayer player, UUID entityId) {
+		if (!(player.level() instanceof ServerLevel level)) {
+			return;
+		}
+		Entity entity = level.getEntity(entityId);
+		if (!(entity instanceof PokemonEntity pokemonEntity)) {
+			return;
+		}
+		Pokemon pokemon = pokemonEntity.getPokemon();
+		if (!player.getUUID().equals(pokemon.getOwnerUUID())) {
+			return;
+		}
+		MegaEvolution.WorldMegaResult result = MegaEvolution.toggleWorldMega(player, pokemon);
+		player.displayClientMessage(
+			Component.translatable("megacobble.feedback." + result.name().toLowerCase(Locale.ROOT)), true);
 	}
 }

@@ -2,12 +2,13 @@
 Generates the Legends Z-A / custom megas through the proven custom-mega pipeline:
   - data/cobblemon/species_additions/<sp>_mega.json   (the mega FORM on the Cobblemon side)
   - custom_mega_showdown.json                          (sim item defs + new-ability JS)
-  - per-stone item texture/model/lang + substitute resolver
-  - appends the stones to megastones.json + lang (which gen_megastones.py writes first)
+  - the substitute resolver (placeholder visual; real skins come from an external pack)
+  - appends the stones to megastones.json + the ability lang (gen_megastones.py runs first)
 
+Stones are vanilla items identified by custom_data, so no item textures/models are generated.
 Run AFTER gen_megastones.py (which produces the classic 47). Reads za_megas.json for stats/types/abilities.
 """
-import struct, zlib, os, math, json, shutil
+import os, json, shutil
 
 ROOT = r"E:/mod dev/mega co/src/main/resources"
 
@@ -51,40 +52,6 @@ NEW_ABILITY_JS = {
    "{ name: 'Mega Sol' }"),
 }
 
-TYPE_COLOR = {
- 'normal':(168,168,120),'fire':(240,128,48),'water':(104,144,240),'grass':(120,200,80),
- 'electric':(248,208,48),'ice':(152,216,216),'fighting':(192,48,40),'poison':(160,64,160),
- 'ground':(224,192,104),'flying':(168,144,240),'psychic':(248,88,136),'bug':(168,184,32),
- 'rock':(184,160,56),'ghost':(112,88,152),'dragon':(112,56,248),'dark':(112,88,72),
- 'steel':(184,184,208),'fairy':(238,153,172),None:(210,210,220),
-}
-
-def write_png(path, px, w=16, h=16):
-    raw=bytearray()
-    for y in range(h):
-        raw.append(0)
-        for x in range(w): raw+=bytes(px[y*w+x])
-    def ch(t,d): return struct.pack('>I',len(d))+t+d+struct.pack('>I',zlib.crc32(t+d)&0xffffffff)
-    png=b'\x89PNG\r\n\x1a\n'+ch(b'IHDR',struct.pack('>IIBBBBB',w,h,8,6,0,0,0))+ch(b'IDAT',zlib.compress(bytes(raw),9))+ch(b'IEND',b'')
-    os.makedirs(os.path.dirname(path),exist_ok=True); open(path,'wb').write(png)
-
-T=(0,0,0,0)
-def shade(c,f): return (max(0,min(255,int(c[0]*f))),max(0,min(255,int(c[1]*f))),max(0,min(255,int(c[2]*f))),255)
-def orb(a, b):
-    px=[T]*256; cx=cy=7.5; R=7.3
-    for y in range(16):
-        for x in range(16):
-            dx,dy=x-cx,y-cy; d=math.hypot(dx,dy)
-            if d>R: continue
-            sf=1.18-(dx+dy)/22.0
-            boundary=cy+2.6*math.sin((x-cx)/2.4)
-            c=a if y<boundary else b
-            c=shade(c,sf)
-            if d>R-1.1: c=shade(c,0.6)
-            if math.hypot(x-5,y-5)<1.6: c=(255,255,255,255)
-            px[y*16+x]=c
-    return px
-
 ZA = json.load(open(os.path.join(ROOT,'za_megas.json'),encoding='utf-8'))['megas']
 
 manifest_path = os.path.join(ROOT,'megastones.json')
@@ -111,11 +78,7 @@ for e in ZA:
     t1=e['type1']; t2=e.get('type2')
     ab=e['ability']; ab_id=NEW_ABILITY_ID.get(ab, ab)
 
-    # asset: orb texture + model + lang + resolver
-    write_png(f"{ROOT}/assets/megacobble/textures/item/{stone_id}.png",
-              orb(TYPE_COLOR.get(t1,TYPE_COLOR[None]), TYPE_COLOR.get(t2 if t2 else t1, TYPE_COLOR.get(t1))))
-    json.dump({"parent":"minecraft:item/generated","textures":{"layer0":f"megacobble:item/{stone_id}"}},
-              open(f"{ROOT}/assets/megacobble/models/item/{stone_id}.json","w"),indent=2)
+    # substitute resolver (placeholder; real skins come from an external resource pack)
     req = REQUIRED_ASPECT.get(sp)
     def sub(asp, shiny=False):
         return {"aspects":([asp,"shiny"] if shiny else [asp]),"poser":"cobblemon:substitute",
@@ -125,7 +88,6 @@ for e in ZA:
     if req: variations += [sub(req), sub(req, True)]   # restricted base form (e.g. Eternal Floette) too
     json.dump({"species":f"cobblemon:{sp}","order":5,"variations":variations},
               open(f"{ROOT}/assets/cobblemon/bedrock/pokemon/resolvers/megacobble/{sp}.json","w"),indent=2)
-    lang[f"item.megacobble.{stone_id}"]=stone_name
 
     # cobblemon species_addition (the mega FORM, with requiredItem so Cobblemon feeds the forme to the sim)
     form_obj={"name":form,"baseStats":e['baseStats'],"primaryType":t1,
@@ -152,7 +114,7 @@ for e in ZA:
     count+=1
 
 json.dump(manifest, open(manifest_path,"w"),indent=2)
-json.dump(lang, open(lang_path,"w"),indent=2,ensure_ascii=False)
+json.dump(lang, open(lang_path,"w",encoding='utf-8'),indent=2,ensure_ascii=False)
 
 # New abilities ship as Cobblemon datapack ability files: this registers them on the Cobblemon
 # side (so species_additions referencing them parse) AND Cobblemon forwards them to the sim.
