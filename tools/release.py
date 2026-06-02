@@ -83,7 +83,7 @@ def main():
 
     git("add", "gradle.properties")
     git("commit", "-m", f"Release {tag}")
-    git("tag", tag)
+    git("tag", "-a", tag, "-m", f"Release {tag}")   # annotated, so `git push --follow-tags` sends it
     print(f"{version} -> {new}  (committed + tagged {tag})")
 
     if args.push:
