@@ -22,6 +22,7 @@
   "megacobble.command.config.set": "Set %s to %s.",
   "megacobble.command.give.unknown": "Unknown stone: %s",
   "megacobble.command.give.given": "Gave %sx %s.",
+  "megacobble.command.give.given_to": "Gave %sx %s to %s.",
   "megacobble.command.variant.header": "Mega Cobble variants:",
   "megacobble.command.variant.reloaded": "Reloaded %s variants from config.",
   "megacobble.command.skin.set": "Applied skin aspect '%s'.",

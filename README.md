@@ -147,9 +147,10 @@ the gaps:
 
 ## Using it in-game
 
-1. Get the items with **`/megacobble give charizardite_x`** and **`/megacobble give key_stone`**
-   (tab-completes every stone id; optional count). They're `amethyst_shard`s tagged with
-   `custom_data` until the resource pack re-skins them.
+1. Get the items with **`/megacobble give <stone|random> [count] [<targets>]`** — e.g.
+   `/megacobble give charizardite_x`, `/megacobble give key_stone`, `/megacobble give random`, or
+   `/megacobble give venusaurite 5 @a` to hand them to other players (op only; omit the target for
+   yourself). They're `amethyst_shard`s tagged with `custom_data` until the resource pack re-skins them.
 2. Give a Pokémon its matching Mega Stone in its **held-item** slot.
 3. Keep a **Key Stone** in your inventory and start a battle.
 4. On the Fight screen, use the mega button, pick a move, and it Mega Evolves.

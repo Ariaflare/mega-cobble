@@ -19,6 +19,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.chat.Component;
@@ -32,7 +33,9 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The {@code /megacobble} command tree. Player-facing {@code worldmega} sub-command to mega-evolve a
@@ -62,10 +65,16 @@ public final class MegaCobbleCommands {
                 .requires(src -> src.hasPermission(2))
                 .then(Commands.argument("stone", StringArgumentType.word())
                     .suggests((c, b) -> SharedSuggestionProvider.suggest(giveSuggestions(), b))
-                    .executes(ctx -> give(ctx.getSource(), StringArgumentType.getString(ctx, "stone"), 1))
+                    .executes(ctx -> give(ctx.getSource(), StringArgumentType.getString(ctx, "stone"), 1, null))
                     .then(Commands.argument("count", IntegerArgumentType.integer(1, 64))
                         .executes(ctx -> give(ctx.getSource(), StringArgumentType.getString(ctx, "stone"),
-                            IntegerArgumentType.getInteger(ctx, "count"))))))
+                            IntegerArgumentType.getInteger(ctx, "count"), null))
+                        .then(Commands.argument("targets", EntityArgument.players())
+                            .executes(ctx -> give(ctx.getSource(), StringArgumentType.getString(ctx, "stone"),
+                                IntegerArgumentType.getInteger(ctx, "count"), EntityArgument.getPlayers(ctx, "targets")))))
+                    .then(Commands.argument("targets", EntityArgument.players())
+                        .executes(ctx -> give(ctx.getSource(), StringArgumentType.getString(ctx, "stone"), 1,
+                            EntityArgument.getPlayers(ctx, "targets"))))))
             .then(Commands.literal("variant")
                 .requires(src -> src.hasPermission(2))
                 .then(Commands.literal("list").executes(ctx -> listVariants(ctx.getSource())))
@@ -101,38 +110,70 @@ public final class MegaCobbleCommands {
 
     private enum Mode { ON, OFF, TOGGLE }
 
-    /** Suggestion list for {@code /megacobble give}: the Key Stone plus every Mega Stone id. */
+    /** Suggestions for {@code /megacobble give}: "random", the Key Stone, plus every Mega Stone id. */
     private static Iterable<String> giveSuggestions() {
         List<String> ids = new ArrayList<>();
+        ids.add("random");
         ids.add(MegaItems.KEY_STONE_ID);
         MegaStones.stoneIds().forEach(ids::add);
         return ids;
     }
 
-    /** Gives the player a Key Stone or a Mega Stone (vanilla item + custom_data) by id. */
-    private static int give(CommandSourceStack source, String id, int count) {
-        ServerPlayer player = source.getPlayer();
-        if (player == null) {
-            source.sendFailure(Component.translatable("megacobble.command.player_only"));
-            return 0;
-        }
-        ItemStack stack;
-        if (MegaItems.KEY_STONE_ID.equals(id)) {
-            stack = MegaItems.createKeyStone();
+    /**
+     * Gives a Mega Stone / Key Stone to the recipients. {@code targets} null = the executing player,
+     * otherwise the resolved player selector. {@code id} "random" gives each recipient an independently
+     * random Mega Stone. Op-gated by the command tree.
+     */
+    private static int give(CommandSourceStack source, String id, int count, Collection<ServerPlayer> targets) {
+        Collection<ServerPlayer> recipients;
+        if (targets != null) {
+            recipients = targets;
         } else {
-            MegaStones.MegaStone stone = MegaStones.byStoneId(id);
-            if (stone == null) {
+            ServerPlayer self = source.getPlayer();
+            if (self == null) {
+                source.sendFailure(Component.translatable("megacobble.command.player_only"));
+                return 0;
+            }
+            recipients = List.of(self);
+        }
+
+        boolean random = "random".equalsIgnoreCase(id);
+        boolean keyStone = MegaItems.KEY_STONE_ID.equalsIgnoreCase(id);
+        MegaStones.MegaStone fixed = null;
+        if (!random && !keyStone) {
+            fixed = MegaStones.byStoneId(id);
+            if (fixed == null) {
                 source.sendFailure(Component.translatable("megacobble.command.give.unknown", id));
                 return 0;
             }
-            stack = MegaItems.createStone(stone);
         }
-        stack.setCount(count);
-        if (!player.getInventory().add(stack)) {
-            player.drop(stack, false);
+        List<MegaStones.MegaStone> pool = MegaStones.all();
+
+        for (ServerPlayer player : recipients) {
+            ItemStack stack;
+            if (keyStone) {
+                stack = MegaItems.createKeyStone();
+            } else {
+                MegaStones.MegaStone stone = random ? pool.get(ThreadLocalRandom.current().nextInt(pool.size())) : fixed;
+                stack = MegaItems.createStone(stone);
+            }
+            stack.setCount(count);
+            if (!player.getInventory().add(stack)) {
+                player.drop(stack, false);
+            }
         }
-        source.sendSuccess(() -> Component.translatable("megacobble.command.give.given", count, id)
-            .withStyle(ChatFormatting.GREEN), false);
+
+        String what = random ? "a random Mega Stone" : keyStone ? "Key Stone" : fixed.name();
+        if (targets == null) {
+            source.sendSuccess(() -> Component.translatable("megacobble.command.give.given", count, what)
+                .withStyle(ChatFormatting.GREEN), false);
+        } else {
+            String who = recipients.size() == 1
+                ? recipients.iterator().next().getGameProfile().getName()
+                : recipients.size() + " players";
+            source.sendSuccess(() -> Component.translatable("megacobble.command.give.given_to", count, what, who)
+                .withStyle(ChatFormatting.GREEN), true);
+        }
         return 1;
     }
 

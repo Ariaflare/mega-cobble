@@ -15,7 +15,7 @@ Every command lives under **`/megacobble`**.
 | Command | Perm | What it does |
 | --- | --- | --- |
 | `/megacobble worldmega [on\|off\|toggle] [slot <1-6>]` | all | Mega-evolve a Pokémon out of battle |
-| `/megacobble give <stone> [count]` | op | Give yourself a Mega Stone or the Key Stone |
+| `/megacobble give <stone\|random> [count] [<targets>]` | op | Give a Mega Stone / Key Stone / random stone to you or player(s) |
 | `/megacobble variant list` | op | List the named-look catalog |
 | `/megacobble variant apply\|remove <variant> [slot <1-6>]` | op | Apply / remove a named look |
 | `/megacobble variant reload` | op | Re-read the look catalog from disk |
@@ -53,19 +53,24 @@ command equivalent of the interaction-wheel "Mega Evolve" button. No argument = 
 ## `give` — get stones
 
 ```
-/megacobble give <stone> [count]
+/megacobble give <stone> [count] [<targets>]
+/megacobble give random  [count] [<targets>]
 ```
 
-Gives you a **Mega Stone** or the **Key Stone**. Stones are vanilla items tagged with `custom_data`;
-`<stone>` **tab-completes** every stone id plus `key_stone`. `[count]` is 1–64 (default 1).
+Gives a **Mega Stone** or the **Key Stone**. `<stone>` **tab-completes** `random`, `key_stone`, and
+every Mega Stone id. `[count]` is 1–64 (default 1). `[<targets>]` is a **player selector** (`@p`, `@a`,
+`@r`, a username, …) — **omit it to give to yourself**. `random` gives each recipient an independently
+**random Mega Stone**.
 
-- **Permission:** op.
+- **Permission:** op (for everything, including giving to other players).
 
 **Examples**
 ```
-/megacobble give key_stone
-/megacobble give venusaurite
-/megacobble give charizardite_x 5
+/megacobble give key_stone                 # Key Stone to yourself
+/megacobble give venusaurite 5             # 5 Venusaurite to yourself
+/megacobble give charizardite_x Steve      # to player Steve
+/megacobble give random                    # a random Mega Stone to yourself
+/megacobble give random 1 @a               # a random stone to every online player
 ```
 
 ## `variant` — named looks
