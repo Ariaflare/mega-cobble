@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.11-SNAPSHOT'
+	id 'fabric-loom' version '1.13.6'
 	// Applying the Kotlin plugin makes Loom remap the Kotlin @Metadata of mod dependencies
 	// (Cobblemon) into our mappings. Without this, Cobblemon's Kotlin reflection looks up
 	// intermediary names (e.g. net.minecraft.class_2960) that don't exist at dev runtime.
@@ -49,6 +49,19 @@ dependencies {
 
 	// Cobblemon itself (the API we build the Mega Evolution PoC against)
 	modImplementation "com.cobblemon:fabric:${project.cobblemon_version}"
+
+	// Local dev-testing only: load Cobblemon Raid Dens + GeckoLib into runClient/runServer when those
+	// jars are present in test-server/mods (not committed). Guarded so CI builds (no test-server) skip
+	// it; runtime-only, never shipped. Lets us exercise megacobble against raid (custom) battles in dev.
+	def geckoJar = file("test-server/mods/geckolib-fabric-1.21.1-4.8.4.jar")
+	def raidJar = file("test-server/mods/cobblemonraiddens-fabric-0.11.1+1.21.1.jar")
+	def clothJar = file("test-server/mods/cloth-config-15.0.140-fabric.jar")
+	if (geckoJar.exists() && raidJar.exists()) {
+		modLocalRuntime files(geckoJar)
+		modLocalRuntime files(raidJar)
+		// Cloth Config (autoconfig) — transitive runtime dep of Raid Dens' Showdown loader.
+		if (clothJar.exists()) modLocalRuntime files(clothJar)
+	}
 }
 
 processResources {
