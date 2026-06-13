@@ -7,8 +7,10 @@ import com.aaroncraft.megacobble.item.MegaStones;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.cobblemon.mod.common.net.messages.client.battle.BattleSwitchPokemonPacket;
 import com.cobblemon.mod.common.pokemon.FormData;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.network.chat.Component;
@@ -109,9 +111,35 @@ public final class MegaEvolution {
         target.setForcedAspects(forced);
         target.setForm(megaForm);
         target.setNickname(Component.literal(buildMegaName(target.getSpecies().getName(), megaForm.getName())));
+        refreshBattleName(target, battle);
 
         MegaCobble.LOGGER.info("[Mega Cobble] In-battle mega: {} -> {} ({}).",
             target.getSpecies().getName(), megaForm.getName(), target.getUuid());
+    }
+
+    /**
+     * Pushes the mega name to the in-battle HUD. Cobblemon captures a battler's name label when it's
+     * sent out and never refreshes it mid-battle — its own forme changes (Aegislash, etc.) behave the
+     * same way, so renaming the Pokémon alone updates the overworld nameplate but not the battle HUD.
+     * Re-send the active slot the way Cobblemon's own switch does: an ally-perspective and an
+     * opponent-perspective {@link BattleSwitchPokemonPacket} routed by {@code sendSidedUpdate}. The
+     * client handler only slides the info tile (carrying the new name + current HP) — it does not
+     * recall or re-send-out the model. No-op if the Pokémon isn't an active battler.
+     */
+    private static void refreshBattleName(Pokemon pokemon, PokemonBattle battle) {
+        for (ActiveBattlePokemon active : battle.getActivePokemon()) {
+            BattlePokemon battlePokemon = active.getBattlePokemon();
+            if (battlePokemon == null
+                || !battlePokemon.getEffectedPokemon().getUuid().equals(pokemon.getUuid())) {
+                continue;
+            }
+            String pnx = active.getPNX();
+            BattlePokemon illusion = active.getIllusion();
+            BattleSwitchPokemonPacket ally = new BattleSwitchPokemonPacket(pnx, battlePokemon, true, illusion);
+            BattleSwitchPokemonPacket enemy = new BattleSwitchPokemonPacket(pnx, battlePokemon, false, illusion);
+            battle.sendSidedUpdate(active.getActor(), ally, enemy, false);
+            return;
+        }
     }
 
     /**

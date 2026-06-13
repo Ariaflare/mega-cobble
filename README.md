@@ -316,6 +316,13 @@ and kept only as a local reference.
 
 Newest first.
 
+- **Fix: mega name didn't update on the in-battle HUD** — mega-evolving renames the Pokémon
+  (`Mega-Venusaur`) and that already synced to the overworld nameplate and party, but the battle card
+  kept showing the base name. Cobblemon captures a battler's name label when it's sent out and never
+  refreshes it mid-battle (its own forme changes — Aegislash, etc. — behave the same way), so the
+  rename never reached the HUD. The mega now re-sends its active battle slot the way a switch does
+  (`PokemonBattle.sendSidedUpdate` with an ally- and opponent-perspective `BattleSwitchPokemonPacket`),
+  which slides the info tile back in carrying the mega name and current HP — no model recall.
 - **Fix: mega persisted after custom/forced battle ends** — revert was hooked only to `BATTLE_VICTORY`
   / `BATTLE_FLED` / `BATTLE_FAINTED`, but battles that end without a declared winner (custom, forced,
   or drawn — they go through `PokemonBattle.end()`, which posts no event) never reverted, so the mega
