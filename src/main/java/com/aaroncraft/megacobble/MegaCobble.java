@@ -16,6 +16,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
@@ -75,14 +76,20 @@ public class MegaCobble implements ModInitializer {
 			MegaEvolution.revertWorldMegasForBattle(event.getBattle().getPlayers());
 		});
 
-		// When Showdown mega evolves a Pokémon, mirror the form change on the Minecraft side.
+		// When Showdown mega evolves a Pokémon, mirror the form change on the Minecraft side (and
+		// remember which battle it happened in, so we can revert even on a custom/forced battle end).
 		CobblemonEvents.MEGA_EVOLUTION.subscribe(event ->
-			MegaEvolution.applyMega(event.getPokemon().getEffectedPokemon()));
+			MegaEvolution.applyMega(event.getPokemon().getEffectedPokemon(), event.getBattle()));
 
 		// Mega Evolution is temporary: revert when the battle ends, is fled, or the Pokémon faints.
 		CobblemonEvents.BATTLE_VICTORY.subscribe(event -> MegaEvolution.revertBattle(event.getBattle()));
 		CobblemonEvents.BATTLE_FLED.subscribe(event -> MegaEvolution.revertBattle(event.getBattle()));
 		CobblemonEvents.BATTLE_FAINTED.subscribe(event -> MegaEvolution.revert(event.getKilled().getEffectedPokemon()));
+
+		// Safety net: BATTLE_VICTORY/FLED only fire on a win or flee. Battles that end any other way
+		// (custom, forced, drawn) post no event, so reconcile every tick — revert any in-battle mega
+		// whose battle has ended. Cheap: a no-op unless something is currently mega-evolved in battle.
+		ServerTickEvents.END_SERVER_TICK.register(server -> MegaEvolution.revertEndedBattleMegas());
 	}
 
 	/**

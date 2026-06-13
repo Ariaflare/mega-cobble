@@ -316,6 +316,12 @@ and kept only as a local reference.
 
 Newest first.
 
+- **Fix: mega persisted after custom/forced battle ends** — revert was hooked only to `BATTLE_VICTORY`
+  / `BATTLE_FLED` / `BATTLE_FAINTED`, but battles that end without a declared winner (custom, forced,
+  or drawn — they go through `PokemonBattle.end()`, which posts no event) never reverted, so the mega
+  stuck. Now each in-battle mega is tracked with its battle and a per-tick safety net reverts it once
+  that battle has ended (or left the registry) by any path; the event hooks stay for instant revert on
+  normal ends.
 - **Generator cleanup (Track F)** — `gen_megastones.py` / `gen_custom_megas.py` now match the
   custom_data architecture: they stop emitting registered-item textures/models/lang (stones are
   vanilla items skinned by an external pack) and **no longer overwrite the hand-maintained command

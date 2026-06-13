@@ -7,6 +7,7 @@ import com.aaroncraft.megacobble.item.MegaStones;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.FormData;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +52,15 @@ public final class MegaEvolution {
     /** Pre-mega state for out-of-battle ("world") megas; kept separate from the in-battle states. */
     private static final Map<UUID, Original> WORLD_MEGA_STATES = new ConcurrentHashMap<>();
 
+    /**
+     * In-battle megas tracked with the battle they happened in, so they can be reverted when that
+     * battle ends by ANY path — including custom/forced/drawn battles that post no win/flee event.
+     */
+    private static final Map<UUID, BattleMega> BATTLE_MEGAS = new ConcurrentHashMap<>();
+
     private record Original(Set<String> forcedAspects, MutableComponent nickname) {}
+
+    private record BattleMega(Pokemon pokemon, PokemonBattle battle) {}
 
     /** Outcome of a world (out-of-battle) Mega Evolution request, for command / packet feedback. */
     public enum WorldMegaResult {
@@ -81,7 +91,7 @@ public final class MegaEvolution {
      * ability are Showdown's job; this is the visual + data form. The pre-mega state is recorded for
      * {@link #revert}.
      */
-    public static void applyMega(Pokemon target) {
+    public static void applyMega(Pokemon target, PokemonBattle battle) {
         MegaStones.MegaStone stone = MegaStones.byCustomData(target.heldItem());
         if (stone == null) {
             return;
@@ -92,6 +102,7 @@ public final class MegaEvolution {
         }
         MEGA_STATES.put(target.getUuid(),
             new Original(new HashSet<>(target.getForcedAspects()), target.getNickname()));
+        BATTLE_MEGAS.put(target.getUuid(), new BattleMega(target, battle));
 
         Set<String> forced = new HashSet<>(target.getForcedAspects());
         forced.addAll(megaForm.getAspects());
@@ -109,6 +120,7 @@ public final class MegaEvolution {
      * syncs to the client automatically.
      */
     public static void revert(Pokemon pokemon) {
+        BATTLE_MEGAS.remove(pokemon.getUuid());
         Original original = MEGA_STATES.remove(pokemon.getUuid());
         if (original == null) {
             return;
@@ -124,6 +136,26 @@ public final class MegaEvolution {
         for (BattleActor actor : battle.getActors()) {
             for (BattlePokemon battlePokemon : actor.getPokemonList()) {
                 revert(battlePokemon.getEffectedPokemon());
+            }
+        }
+    }
+
+    /**
+     * Safety net for battles that end without a {@code BATTLE_VICTORY}/{@code BATTLE_FLED} event —
+     * custom, forced, or drawn battles end via {@code PokemonBattle.end()}, which posts no event. Once
+     * a tracked in-battle mega's battle is over (ended, or removed from the registry), revert it.
+     * Called every server tick; a no-op unless something is currently mega-evolved in battle.
+     */
+    public static void revertEndedBattleMegas() {
+        if (BATTLE_MEGAS.isEmpty()) {
+            return;
+        }
+        for (BattleMega battleMega : new ArrayList<>(BATTLE_MEGAS.values())) {
+            PokemonBattle battle = battleMega.battle();
+            boolean over = battle.getEnded()
+                || BattleRegistry.INSTANCE.getBattle(battle.getBattleId()) == null;
+            if (over) {
+                revert(battleMega.pokemon());
             }
         }
     }
