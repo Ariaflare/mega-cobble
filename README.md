@@ -134,16 +134,20 @@ Everything runs through Cobblemon's existing systems — no edits to Cobblemon's
   name); the Showdown sim handles the actual battle mechanics; revert is hooked to battle
   end / flee / faint.
 
-For megas **not** in Cobblemon's bundled sim (Z-A and custom), two extra data sources fill
+For megas **not** in Cobblemon's bundled sim (Z-A and custom), three extra data sources fill
 the gaps:
 
 - `data/cobblemon/species_additions/<species>_mega.json` — adds the mega **form** (stats /
   types / ability / aspect / `requiredItem`); Cobblemon auto-syncs it to the sim.
+- `data/megacobble/abilities/<id>.js` — any **new ability**, registered on the **Cobblemon side**.
+  Required for a `species_additions` that references the ability to parse at all (without it the
+  datapack fails to load). Cobblemon does **not** forward these to the battle sim, though.
 - `custom_mega_showdown.json` — the **mega-stone item** def (`megaStone`/`megaEvolves`) under
-  `heldItem`, plus any **new ability** JS under `abilities`. Both are injected into the sim at
-  battle start by `MegaShowdownInjector` — Cobblemon won't send our items, and it doesn't forward
-  datapack ability JS to the sim either (so a custom ability must be injected here or it has no
-  effect in battle).
+  `heldItem`, plus the same **new ability** JS under `abilities`. Both are injected into the sim at
+  battle start by `MegaShowdownInjector`. Cobblemon won't send our items, doesn't forward datapack
+  abilities to the sim, and blanks every mega forme's abilities to "No Ability" when it syncs species
+  — so `MegaShowdownInjector` also restores each mega forme's real ability at battle start. Without
+  the `abilities` injection a custom ability is registered Cobblemon-side but has no effect in battle.
 
 ## Using it in-game
 
@@ -248,6 +252,7 @@ src/main/resources/
   za_megas.json                   Legends Z-A / custom mega data (types, abilities, stats)
   custom_mega_showdown.json       mega-stone item + custom-ability defs injected into the sim
   data/cobblemon/species_additions/   the mega forms (Z-A / custom)
+  data/megacobble/abilities/      new abilities registered Cobblemon-side (so species_additions parse)
   assets/megacobble/...           lang + the interaction-wheel icon (stone art lives in ../megacobble-assets/)
   assets/cobblemon/bedrock/pokemon/resolvers/megacobble/   substitute-doll resolvers
 tools/gen_megastones.py           classic stones: substitute resolvers + megastones.json manifest
@@ -315,6 +320,13 @@ and kept only as a local reference.
 
 Newest first.
 
+- **Hotfix: server failed to load with v0.0.4** — v0.0.4 wrongly removed the
+  `data/megacobble/abilities/*.js` files, thinking they were dead. They're not: Cobblemon loads them
+  to register the abilities **on its own side**, which a `species_additions` referencing them needs in
+  order to parse — without them the datapack failed to load (`Error loading JSON for data:
+  cobblemon:excadrill_mega`). Restored the files and updated the generator/docs: the abilities now ship
+  in **both** places on purpose — as datapack JS (Cobblemon-side registration) **and** in
+  `custom_mega_showdown.json` (sim injection for the actual battle effect).
 - **Fix: mega abilities had no effect in battle** — mega-evolving showed the right ability name (e.g.
   Blaziken → Speed Boost) but it never did anything: no speed gain, no Thick Fat, no custom Dragonize.
   Root cause (confirmed by instrumenting the bundled sim): Cobblemon serializes **every** mega forme to
@@ -324,9 +336,8 @@ Newest first.
   re-registers it with the correct `abilities[0]` taken from Cobblemon's own form data (the sim
   resolves species from this registry ahead of its cache, so it applies immediately). The three custom
   abilities (Dragonize, Piercing Drill, Mega Sol) are now also injected as real Showdown ability defs
-  via `custom_mega_showdown.json` — previously they lived only as datapack JS that Cobblemon never
-  forwarded to the sim, so even with the right name they'd resolve to "No Ability". Covers all megas,
-  classic and custom.
+  via `custom_mega_showdown.json`, so even with the right name they no longer resolve to "No Ability".
+  Covers all megas, classic and custom.
 - **Fix: mega name didn't update on the in-battle HUD** — mega-evolving renames the Pokémon
   (`Mega-Venusaur`) and that already synced to the overworld nameplate and party, but the battle card
   kept showing the base name. Cobblemon captures a battler's name label when it's sent out and never

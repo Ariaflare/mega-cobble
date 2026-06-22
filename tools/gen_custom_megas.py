@@ -116,15 +116,24 @@ for e in ZA:
 json.dump(manifest, open(manifest_path,"w"),indent=2)
 json.dump(lang, open(lang_path,"w",encoding='utf-8'),indent=2,ensure_ascii=False)
 
-# Both the mega-stone items AND any new custom-mega abilities are injected straight into the bundled
-# sim at battle start (via ShowdownService). Cobblemon does NOT forward datapack ability JS to the
-# sim, and it sends every mega forme with its abilities blanked to "No Ability" — so without these
-# injections the custom ability simply has no effect in battle.
+# New abilities ship as Cobblemon datapack ability files: this registers them on the Cobblemon side,
+# which is REQUIRED for species_additions referencing them to parse (and for our form-data lookup).
+ab_dir = os.path.join(ROOT,'data/megacobble/abilities')
+if os.path.isdir(ab_dir): shutil.rmtree(ab_dir)
+os.makedirs(ab_dir,exist_ok=True)
+for ab_id, js in abilities.items():
+    open(f"{ab_dir}/{ab_id}.js","w").write(js + "\n")
+
+# Cobblemon registers those abilities on its own side but does NOT forward them to the bundled sim,
+# and it sends every mega forme to the sim with its abilities blanked to "No Ability". So the SAME
+# mega-stone items AND ability defs are also injected straight into the sim at battle start (via
+# ShowdownService / MegaShowdownInjector) — without the 'abilities' injection the custom ability is
+# registered Cobblemon-side but has no effect in battle.
 json.dump({
-  "_comment":"Mega-stone item + custom-ability definitions for megas not in Cobblemon's bundled sim (Legends Z-A + custom). Injected at battle start via ShowdownService. 'heldItem'/'abilities' map a Showdown id to a JS def the sim's receiveData() evaluates.",
+  "_comment":"Mega-stone item + custom-ability definitions for megas not in Cobblemon's bundled sim (Legends Z-A + custom). Injected at battle start via ShowdownService. 'heldItem'/'abilities' map a Showdown id to a JS def the sim's receiveData() evaluates. Abilities are ALSO shipped as Cobblemon datapack files under data/megacobble/abilities/ so species_additions referencing them parse.",
   "abilities":abilities,
   "heldItem":held_items,
 }, open(os.path.join(ROOT,'custom_mega_showdown.json'),"w"),indent=2)
 
 print(f"Generated {count} custom megas. manifest now {len(manifest)} stones.")
-print(f"  heldItem injections: {len(held_items)} | ability injections: {sorted(abilities.keys())}")
+print(f"  heldItem injections: {len(held_items)} | abilities (datapack + sim): {sorted(abilities.keys())}")
