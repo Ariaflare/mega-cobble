@@ -1,1 +1,1 @@
-{ name: 'Mega Sol' }
+{ name: 'Mega Sol', onBasePowerPriority: 21, onBasePower(basePower, attacker, defender, move) { if (move.type === 'Fire') { return this.chainModify(1.5); } if (move.type === 'Water') { return this.chainModify(0.5); } } }

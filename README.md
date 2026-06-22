@@ -320,6 +320,12 @@ and kept only as a local reference.
 
 Newest first.
 
+- **Mega Sol now actually does something** — verified all 19 Z-A / custom mega abilities against the
+  Pokémon Champions data (Legends: Z-A itself has no abilities; Champions assigns them). Names and
+  typings all already matched; the one gap was **Mega Sol** (Mega Meganium), which shipped as a
+  no-op stub. It now makes the user's moves behave as if harsh sunlight is up — Fire-type power ×1.5,
+  Water-type power ×0.5 — mirroring the Sunny Day damage modifier. (Dragonize and Piercing Drill were
+  already correct; Piercing Drill matches the bundled Unseen Fist.)
 - **Hotfix: server failed to load with v0.0.4** — v0.0.4 wrongly removed the
   `data/megacobble/abilities/*.js` files, thinking they were dead. They're not: Cobblemon loads them
   to register the abilities **on its own side**, which a `species_additions` referencing them needs in

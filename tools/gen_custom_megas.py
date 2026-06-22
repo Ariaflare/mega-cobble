@@ -34,7 +34,7 @@ NEW_ABILITY_ID = {'mega_sol':'megasol','dragonize':'dragonize','piercing_drill':
 NEW_ABILITY_DESC = {
  'dragonize': "This Pokemon's Normal-type moves become Dragon-type and gain a small power boost.",
  'piercingdrill': "This Pokemon's contact moves strike through Protect and Detect.",
- 'megasol': "Weather-dependent moves act as if harsh sunlight is active. (Work in progress.)",
+ 'megasol': "This Pokemon's moves act as if harsh sunlight is active: Fire-type power x1.5, Water-type power x0.5.",
 }
 
 # Minimal, original implementations of the new abilities (the sim eval()s these).
@@ -46,10 +46,11 @@ NEW_ABILITY_JS = {
    " onBasePower(bp, pokemon, target, move) { if (move.typeChangerBoosted === this.effect) return this.chainModify([4915, 4096]); } }"),
  'piercingdrill': ("Piercing Drill",
    "{ name: 'Piercing Drill', onModifyMove(move) { if (move.flags['contact']) { move.flags['protect'] = 0; } } }"),
- # Mega Sol is a complex weather-treatment ability; ship a registered stub so the forme resolves,
- # full effect TODO.
+ # Mega Sol: the user's moves behave as if harsh sunlight (Sunny Day) is up -- Fire x1.5, Water x0.5
+ # base power. Mirrors the sun weather damage modifier, applied to this Pokemon's own attacks.
  'megasol': ("Mega Sol",
-   "{ name: 'Mega Sol' }"),
+   "{ name: 'Mega Sol', onBasePowerPriority: 21,"
+   " onBasePower(basePower, attacker, defender, move) { if (move.type === 'Fire') { return this.chainModify(1.5); } if (move.type === 'Water') { return this.chainModify(0.5); } } }"),
 }
 
 ZA = json.load(open(os.path.join(ROOT,'za_megas.json'),encoding='utf-8'))['megas']
