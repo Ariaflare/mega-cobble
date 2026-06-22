@@ -116,20 +116,15 @@ for e in ZA:
 json.dump(manifest, open(manifest_path,"w"),indent=2)
 json.dump(lang, open(lang_path,"w",encoding='utf-8'),indent=2,ensure_ascii=False)
 
-# New abilities ship as Cobblemon datapack ability files: this registers them on the Cobblemon
-# side (so species_additions referencing them parse) AND Cobblemon forwards them to the sim.
-ab_dir = os.path.join(ROOT,'data/megacobble/abilities')
-if os.path.isdir(ab_dir): shutil.rmtree(ab_dir)
-os.makedirs(ab_dir,exist_ok=True)
-for ab_id, js in abilities.items():
-    open(f"{ab_dir}/{ab_id}.js","w").write(js + "\n")
-
-# The sim injector only needs to provide the mega-stone items (Cobblemon won't send our items;
-# abilities are now handled via the datapack above).
+# Both the mega-stone items AND any new custom-mega abilities are injected straight into the bundled
+# sim at battle start (via ShowdownService). Cobblemon does NOT forward datapack ability JS to the
+# sim, and it sends every mega forme with its abilities blanked to "No Ability" — so without these
+# injections the custom ability simply has no effect in battle.
 json.dump({
-  "_comment":"Mega-stone item definitions for megas not in Cobblemon's bundled sim (Legends Z-A + custom). Injected at battle start via ShowdownService. 'heldItem' maps a Showdown item id to a JS item def the sim's receiveData() evaluates.",
+  "_comment":"Mega-stone item + custom-ability definitions for megas not in Cobblemon's bundled sim (Legends Z-A + custom). Injected at battle start via ShowdownService. 'heldItem'/'abilities' map a Showdown id to a JS def the sim's receiveData() evaluates.",
+  "abilities":abilities,
   "heldItem":held_items,
 }, open(os.path.join(ROOT,'custom_mega_showdown.json'),"w"),indent=2)
 
 print(f"Generated {count} custom megas. manifest now {len(manifest)} stones.")
-print(f"  heldItem injections: {len(held_items)} | datapack abilities: {sorted(abilities.keys())}")
+print(f"  heldItem injections: {len(held_items)} | ability injections: {sorted(abilities.keys())}")

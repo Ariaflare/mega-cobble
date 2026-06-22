@@ -1,5 +1,10 @@
 {
-  "_comment": "Mega-stone item definitions for megas not in Cobblemon's bundled sim (Legends Z-A + custom). Injected at battle start via ShowdownService. 'heldItem' maps a Showdown item id to a JS item def the sim's receiveData() evaluates.",
+  "_comment": "Mega-stone item definitions for megas not in Cobblemon's bundled sim (Legends Z-A + custom). Injected at battle start via ShowdownService. 'heldItem' maps a Showdown item id to a JS item def the sim's receiveData() evaluates. 'abilities' maps a Showdown ability id to a JS ability def for custom-mega abilities that don't exist in the bundled sim (without these, the ability resolves to 'No Ability' and has no effect).",
+  "abilities": {
+    "dragonize": "{ name: 'Dragonize', onModifyTypePriority: -1, onModifyType(move, pokemon) { if (move.type === 'Normal' && move.id !== 'weatherball' && !(move.isZ && move.category !== 'Status')) { move.type = 'Dragon'; move.typeChangerBoosted = this.effect; } }, onBasePowerPriority: 23, onBasePower(bp, pokemon, target, move) { if (move.typeChangerBoosted === this.effect) return this.chainModify([4915, 4096]); } }",
+    "piercingdrill": "{ name: 'Piercing Drill', onModifyMove(move) { if (move.flags['contact']) { move.flags['protect'] = 0; } } }",
+    "megasol": "{ name: 'Mega Sol' }"
+  },
   "heldItem": {
     "greninjite": "{ name: 'Greninjite', megaStone: 'Greninja-Mega', megaEvolves: 'Greninja', itemUser: ['Greninja'], num: 9300, gen: 8, onTakeItem(item, source) { if (item.megaEvolves === source.baseSpecies.baseSpecies) return false; return true; } }",
     "meganiumite": "{ name: 'Meganiumite', megaStone: 'Meganium-Mega', megaEvolves: 'Meganium', itemUser: ['Meganium'], num: 9301, gen: 8, onTakeItem(item, source) { if (item.megaEvolves === source.baseSpecies.baseSpecies) return false; return true; } }",

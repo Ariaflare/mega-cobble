@@ -72,6 +72,7 @@ public class MegaCobble implements ModInitializer {
 		// megas so the real in-battle Showdown mega applies to the base form.
 		CobblemonEvents.BATTLE_STARTED_PRE.subscribe(event -> {
 			MegaShowdownInjector.injectAll();
+			MegaShowdownInjector.fixMegaAbilities();
 			event.getBattle().getPlayers().forEach(MegaEvolution::syncKeyStone);
 			MegaEvolution.revertWorldMegasForBattle(event.getBattle().getPlayers());
 		});
