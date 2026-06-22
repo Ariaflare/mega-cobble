@@ -143,7 +143,7 @@ the gaps:
   Required for a `species_additions` that references the ability to parse at all (without it the
   datapack fails to load). Cobblemon does **not** forward these to the battle sim, though.
 - `custom_mega_showdown.json` — the **mega-stone item** def (`megaStone`/`megaEvolves`) under
-  `heldItem`, plus the same **new ability** JS under `abilities`. Both are injected into the sim at
+  `heldItem`, plus the same **new ability** JS under `ability`. Both are injected into the sim at
   battle start by `MegaShowdownInjector`. Cobblemon won't send our items, doesn't forward datapack
   abilities to the sim, and blanks every mega forme's abilities to "No Ability" when it syncs species
   — so `MegaShowdownInjector` also restores each mega forme's real ability at battle start. Without
@@ -320,6 +320,15 @@ and kept only as a local reference.
 
 Newest first.
 
+- **Hotfix: custom-ability injection crashed battle start (and broke Z-A megas)** — the ability defs
+  were injected under the registry key `abilities`, but the sim's key is `ability` (singular), so
+  `getRegistry("abilities")` returned undefined and `injectAll` threw `Cannot read property 'register'
+  of undefined` at every battle start. Worse, that bad key was sent *first*, so the throw aborted the
+  whole injection — including the `heldItem` mega-stone defs — which is why custom Z-A megas had quietly
+  stopped triggering since v0.0.4 (classic megas use bundled stones, so they were unaffected and hid
+  it). Fixed the key, and made `injectAll` inject each registry type independently so one bad type can
+  never abort the rest. Verified on a dedicated server: Meganium now mega-evolves in battle with zero
+  inject errors.
 - **Mega Sol now actually does something** — verified all 19 Z-A / custom mega abilities against the
   Pokémon Champions data (Legends: Z-A itself has no abilities; Champions assigns them). Names and
   typings all already matched; the one gap was **Mega Sol** (Mega Meganium), which shipped as a

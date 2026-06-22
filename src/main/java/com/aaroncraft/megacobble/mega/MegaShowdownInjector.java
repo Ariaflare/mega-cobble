@@ -73,13 +73,22 @@ public final class MegaShowdownInjector {
         if (INJECTIONS.isEmpty()) {
             return;
         }
+        ShowdownService service;
         try {
-            ShowdownService service = ShowdownService.Companion.getService();
-            for (Map.Entry<String, Map<String, String>> typeEntry : INJECTIONS.entrySet()) {
-                service.sendRegistryData(new HashMap<>(typeEntry.getValue()), typeEntry.getKey());
-            }
+            service = ShowdownService.Companion.getService();
         } catch (Throwable t) {
-            MegaCobble.LOGGER.error("[Mega Cobble] Failed to inject custom-mega data into the Showdown sim", t);
+            MegaCobble.LOGGER.error("[Mega Cobble] Could not reach the Showdown sim to inject custom-mega data", t);
+            return;
+        }
+        // Inject each registry type independently: a failure in one (e.g. an unknown type) must not
+        // abort the others — notably the heldItem stone defs that custom megas need to trigger at all.
+        for (Map.Entry<String, Map<String, String>> typeEntry : INJECTIONS.entrySet()) {
+            try {
+                service.sendRegistryData(new HashMap<>(typeEntry.getValue()), typeEntry.getKey());
+            } catch (Throwable t) {
+                MegaCobble.LOGGER.error("[Mega Cobble] Failed to inject '{}' data into the Showdown sim",
+                    typeEntry.getKey(), t);
+            }
         }
     }
 

@@ -131,8 +131,8 @@ for ab_id, js in abilities.items():
 # ShowdownService / MegaShowdownInjector) — without the 'abilities' injection the custom ability is
 # registered Cobblemon-side but has no effect in battle.
 json.dump({
-  "_comment":"Mega-stone item + custom-ability definitions for megas not in Cobblemon's bundled sim (Legends Z-A + custom). Injected at battle start via ShowdownService. 'heldItem'/'abilities' map a Showdown id to a JS def the sim's receiveData() evaluates. Abilities are ALSO shipped as Cobblemon datapack files under data/megacobble/abilities/ so species_additions referencing them parse.",
-  "abilities":abilities,
+  "_comment":"Mega-stone item + custom-ability definitions for megas not in Cobblemon's bundled sim (Legends Z-A + custom). Injected at battle start via ShowdownService. Top-level keys MUST be valid sim registry types (ability, bagItem, heldItem, move, species). 'heldItem'/'ability' map a Showdown id to a JS def the sim's receiveData() evaluates. Abilities are ALSO shipped as Cobblemon datapack files under data/megacobble/abilities/ so species_additions referencing them parse.",
+  "ability":abilities,
   "heldItem":held_items,
 }, open(os.path.join(ROOT,'custom_mega_showdown.json'),"w"),indent=2)
 
