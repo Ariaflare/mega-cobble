@@ -4,7 +4,7 @@
   "variations": [
     {
       "aspects": [
-        "mega"
+        "mega-z"
       ],
       "poser": "cobblemon:substitute",
       "model": "cobblemon:substitute.geo",
@@ -13,7 +13,7 @@
     },
     {
       "aspects": [
-        "mega",
+        "mega-z",
         "shiny"
       ],
       "poser": "cobblemon:substitute",

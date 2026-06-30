@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:barbaracle",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 72,
+        "attack": 140,
+        "defence": 130,
+        "special_attack": 64,
+        "special_defence": 106,
+        "speed": 88
+      },
+      "primaryType": "rock",
+      "abilities": [
+        "toughclaws"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Barbaraclite",
+      "secondaryType": "fighting"
+    }
+  ]
+}

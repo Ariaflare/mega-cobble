@@ -1,0 +1,44 @@
+{
+  "species": "cobblemon:raichu",
+  "order": 5,
+  "variations": [
+    {
+      "aspects": [
+        "mega-x"
+      ],
+      "poser": "cobblemon:substitute",
+      "model": "cobblemon:substitute.geo",
+      "texture": "cobblemon:textures/pokemon/substitute.png",
+      "layers": []
+    },
+    {
+      "aspects": [
+        "mega-x",
+        "shiny"
+      ],
+      "poser": "cobblemon:substitute",
+      "model": "cobblemon:substitute.geo",
+      "texture": "cobblemon:textures/pokemon/substitute_shiny.png",
+      "layers": []
+    },
+    {
+      "aspects": [
+        "mega-y"
+      ],
+      "poser": "cobblemon:substitute",
+      "model": "cobblemon:substitute.geo",
+      "texture": "cobblemon:textures/pokemon/substitute.png",
+      "layers": []
+    },
+    {
+      "aspects": [
+        "mega-y",
+        "shiny"
+      ],
+      "poser": "cobblemon:substitute",
+      "model": "cobblemon:substitute.geo",
+      "texture": "cobblemon:textures/pokemon/substitute_shiny.png",
+      "layers": []
+    }
+  ]
+}

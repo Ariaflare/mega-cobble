@@ -1,0 +1,25 @@
+{
+  "target": "cobblemon:garchomp",
+  "forms": [
+    {
+      "name": "Mega-Z",
+      "baseStats": {
+        "hp": 108,
+        "attack": 130,
+        "defence": 85,
+        "special_attack": 141,
+        "special_defence": 85,
+        "speed": 151
+      },
+      "primaryType": "dragon",
+      "abilities": [
+        "sandveil"
+      ],
+      "aspects": [
+        "mega-z"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Garchompite Z"
+    }
+  ]
+}

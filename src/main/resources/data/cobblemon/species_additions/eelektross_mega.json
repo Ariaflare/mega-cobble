@@ -1,0 +1,25 @@
+{
+  "target": "cobblemon:eelektross",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 85,
+        "attack": 145,
+        "defence": 80,
+        "special_attack": 135,
+        "special_defence": 90,
+        "speed": 80
+      },
+      "primaryType": "electric",
+      "abilities": [
+        "eelevate"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Eelektrite"
+    }
+  ]
+}

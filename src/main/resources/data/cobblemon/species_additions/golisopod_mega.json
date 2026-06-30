@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:golisopod",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 75,
+        "attack": 150,
+        "defence": 175,
+        "special_attack": 70,
+        "special_defence": 120,
+        "speed": 40
+      },
+      "primaryType": "bug",
+      "abilities": [
+        "emergencyexit"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Golisopite",
+      "secondaryType": "steel"
+    }
+  ]
+}

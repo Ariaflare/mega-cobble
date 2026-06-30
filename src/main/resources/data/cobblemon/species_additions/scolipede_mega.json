@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:scolipede",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 60,
+        "attack": 140,
+        "defence": 149,
+        "special_attack": 75,
+        "special_defence": 99,
+        "speed": 62
+      },
+      "primaryType": "bug",
+      "abilities": [
+        "shellarmor"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Scolipite",
+      "secondaryType": "poison"
+    }
+  ]
+}

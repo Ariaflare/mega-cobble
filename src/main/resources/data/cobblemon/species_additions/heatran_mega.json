@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:heatran",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 91,
+        "attack": 120,
+        "defence": 106,
+        "special_attack": 175,
+        "special_defence": 141,
+        "speed": 67
+      },
+      "primaryType": "fire",
+      "abilities": [
+        "flashfire"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Heatranite",
+      "secondaryType": "steel"
+    }
+  ]
+}

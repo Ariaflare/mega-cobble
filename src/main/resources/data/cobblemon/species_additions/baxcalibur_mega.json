@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:baxcalibur",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 115,
+        "attack": 175,
+        "defence": 117,
+        "special_attack": 105,
+        "special_defence": 101,
+        "speed": 87
+      },
+      "primaryType": "dragon",
+      "abilities": [
+        "thermalexchange"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Baxcalibite",
+      "secondaryType": "ice"
+    }
+  ]
+}

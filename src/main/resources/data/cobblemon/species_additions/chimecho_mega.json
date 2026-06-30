@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:chimecho",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 75,
+        "attack": 50,
+        "defence": 110,
+        "special_attack": 135,
+        "special_defence": 120,
+        "speed": 65
+      },
+      "primaryType": "psychic",
+      "abilities": [
+        "levitate"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Chimechite",
+      "secondaryType": "steel"
+    }
+  ]
+}

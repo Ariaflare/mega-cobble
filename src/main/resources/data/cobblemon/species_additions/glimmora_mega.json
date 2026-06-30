@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:glimmora",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 83,
+        "attack": 90,
+        "defence": 105,
+        "special_attack": 150,
+        "special_defence": 96,
+        "speed": 101
+      },
+      "primaryType": "rock",
+      "abilities": [
+        "adaptability"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Glimmorite",
+      "secondaryType": "poison"
+    }
+  ]
+}

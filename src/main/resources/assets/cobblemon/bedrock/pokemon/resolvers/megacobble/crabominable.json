@@ -1,10 +1,10 @@
 {
-  "species": "cobblemon:absol",
+  "species": "cobblemon:crabominable",
   "order": 5,
   "variations": [
     {
       "aspects": [
-        "mega-z"
+        "mega"
       ],
       "poser": "cobblemon:substitute",
       "model": "cobblemon:substitute.geo",
@@ -13,7 +13,7 @@
     },
     {
       "aspects": [
-        "mega-z",
+        "mega",
         "shiny"
       ],
       "poser": "cobblemon:substitute",

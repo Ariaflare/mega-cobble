@@ -1,0 +1,25 @@
+{
+  "target": "cobblemon:darkrai",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 70,
+        "attack": 120,
+        "defence": 130,
+        "special_attack": 165,
+        "special_defence": 130,
+        "speed": 85
+      },
+      "primaryType": "dark",
+      "abilities": [
+        "baddreams"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Darkraite"
+    }
+  ]
+}

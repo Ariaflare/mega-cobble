@@ -461,5 +461,180 @@
     "species": "drampa",
     "form": "Mega",
     "aspect": "mega"
+  },
+  {
+    "stone": "scraftite",
+    "name": "Scraftite",
+    "species": "scrafty",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "scolipite",
+    "name": "Scolipite",
+    "species": "scolipede",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "eelektrite",
+    "name": "Eelektrite",
+    "species": "eelektross",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "pyroarite",
+    "name": "Pyroarite",
+    "species": "pyroar",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "malamarite",
+    "name": "Malamarite",
+    "species": "malamar",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "barbaraclite",
+    "name": "Barbaraclite",
+    "species": "barbaracle",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "dragalgite",
+    "name": "Dragalgite",
+    "species": "dragalge",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "falinksite",
+    "name": "Falinksite",
+    "species": "falinks",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "crabominite",
+    "name": "Crabominite",
+    "species": "crabominable",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "scovillite",
+    "name": "Scovillite",
+    "species": "scovillain",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "glimmorite",
+    "name": "Glimmorite",
+    "species": "glimmora",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "chimechite",
+    "name": "Chimechite",
+    "species": "chimecho",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "raichunite_x",
+    "name": "Raichunite X",
+    "species": "raichu",
+    "form": "Mega-X",
+    "aspect": "mega-x"
+  },
+  {
+    "stone": "raichunite_y",
+    "name": "Raichunite Y",
+    "species": "raichu",
+    "form": "Mega-Y",
+    "aspect": "mega-y"
+  },
+  {
+    "stone": "staraptite",
+    "name": "Staraptite",
+    "species": "staraptor",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "darkraite",
+    "name": "Darkraite",
+    "species": "darkrai",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "garchompite_z",
+    "name": "Garchompite Z",
+    "species": "garchomp",
+    "form": "Mega-Z",
+    "aspect": "mega-z"
+  },
+  {
+    "stone": "lucarionite_z",
+    "name": "Lucarionite Z",
+    "species": "lucario",
+    "form": "Mega-Z",
+    "aspect": "mega-z"
+  },
+  {
+    "stone": "heatranite",
+    "name": "Heatranite",
+    "species": "heatran",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "magearnite",
+    "name": "Magearnite",
+    "species": "magearna",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "zeraorite",
+    "name": "Zeraorite",
+    "species": "zeraora",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "baxcalibite",
+    "name": "Baxcalibite",
+    "species": "baxcalibur",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "golisopite",
+    "name": "Golisopite",
+    "species": "golisopod",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "tatsugirite",
+    "name": "Tatsugirite",
+    "species": "tatsugiri",
+    "form": "Mega",
+    "aspect": "mega"
+  },
+  {
+    "stone": "absolite_z",
+    "name": "Absolite Z",
+    "species": "absol",
+    "form": "Mega-Z",
+    "aspect": "mega-z"
   }
 ]

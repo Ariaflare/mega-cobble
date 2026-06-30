@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:pyroar",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 86,
+        "attack": 88,
+        "defence": 92,
+        "special_attack": 129,
+        "special_defence": 86,
+        "speed": 126
+      },
+      "primaryType": "fire",
+      "abilities": [
+        "firemane"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Pyroarite",
+      "secondaryType": "normal"
+    }
+  ]
+}

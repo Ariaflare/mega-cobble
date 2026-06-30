@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:absol",
+  "forms": [
+    {
+      "name": "Mega-Z",
+      "baseStats": {
+        "hp": 65,
+        "attack": 154,
+        "defence": 60,
+        "special_attack": 75,
+        "special_defence": 60,
+        "speed": 151
+      },
+      "primaryType": "dark",
+      "abilities": [
+        "pressure"
+      ],
+      "aspects": [
+        "mega-z"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Absolite Z",
+      "secondaryType": "ghost"
+    }
+  ]
+}

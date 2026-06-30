@@ -1,47 +1,718 @@
 {
-  "_comment": "Reference data for Pokemon Legends: Z-A / Champions Mega Evolutions. NOT YET IMPLEMENTED - stored for future use (Cobblemon 1.7.3 has no form data for these). Base stats from Serebii (Legends Z-A); types and abilities from Pokemon Champions. Stat keys use Cobblemon's FormData naming. null = not yet sourced.",
-  "_statOrder": "hp / attack / defence / special_attack / special_defence / speed",
-  "_newAbilities": {
-    "mega_sol": "Treats weather-dependent moves as if harsh sunlight is active.",
-    "dragonize": "Turns Normal-type moves into Dragon-type and boosts their power ~20%.",
-    "piercing_drill": "Contact moves bypass protection moves, dealing reduced damage through them.",
-    "spicy_spray": "Burns any attacker that lands a damaging move on this Pokemon."
+ "_comment": "Reference data for Pokemon Legends: Z-A / Champions Mega Evolutions. NOT YET IMPLEMENTED - stored for future use (Cobblemon 1.7.3 has no form data for these). Base stats from Serebii (Legends Z-A); types and abilities from Pokemon Champions. Stat keys use Cobblemon's FormData naming. null = not yet sourced.",
+ "_statOrder": "hp / attack / defence / special_attack / special_defence / speed",
+ "_newAbilities": {
+  "mega_sol": "Treats weather-dependent moves as if harsh sunlight is active.",
+  "dragonize": "Turns Normal-type moves into Dragon-type and boosts their power ~20%.",
+  "piercing_drill": "Contact moves bypass protection moves, dealing reduced damage through them.",
+  "spicy_spray": "Burns any attacker that lands a damaging move on this Pokemon."
+ },
+ "megas": [
+  {
+   "species": "greninja",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "water",
+   "type2": "dark",
+   "ability": "protean",
+   "baseStats": {
+    "hp": 72,
+    "attack": 125,
+    "defence": 77,
+    "special_attack": 133,
+    "special_defence": 81,
+    "speed": 142
+   }
   },
-  "megas": [
-    {"species": "greninja",    "form": "Mega", "aspect": "mega", "type1": "water",    "type2": "dark",     "ability": "protean",       "baseStats": {"hp": 72, "attack": 125, "defence": 77,  "special_attack": 133, "special_defence": 81,  "speed": 142}},
-    {"species": "meganium",    "form": "Mega", "aspect": "mega", "type1": "grass",    "type2": "fairy",    "ability": "mega_sol",      "baseStats": {"hp": 80, "attack": 92,  "defence": 115, "special_attack": 143, "special_defence": 115, "speed": 80}},
-    {"species": "feraligatr",  "form": "Mega", "aspect": "mega", "type1": "water",    "type2": "dragon",   "ability": "dragonize",     "baseStats": {"hp": 85, "attack": 160, "defence": 125, "special_attack": 89,  "special_defence": 93,  "speed": 78}},
-    {"species": "dragonite",   "form": "Mega", "aspect": "mega", "type1": "dragon",   "type2": "flying",   "ability": "multiscale",    "baseStats": {"hp": 91, "attack": 124, "defence": 115, "special_attack": 145, "special_defence": 125, "speed": 100}},
-    {"species": "excadrill",   "form": "Mega", "aspect": "mega", "type1": "ground",   "type2": "steel",    "ability": "piercing_drill","baseStats": {"hp": 110,"attack": 165, "defence": 100, "special_attack": 65,  "special_defence": 65,  "speed": 103}},
-    {"species": "scrafty",     "form": "Mega", "aspect": "mega", "type1": "dark",     "type2": "fighting", "ability": null,            "baseStats": {"hp": 65, "attack": 130, "defence": 135, "special_attack": 55,  "special_defence": 135, "speed": 68}},
-    {"species": "chandelure",  "form": "Mega", "aspect": "mega", "type1": "ghost",    "type2": "fire",     "ability": "infiltrator",   "baseStats": {"hp": 60, "attack": 75,  "defence": 110, "special_attack": 175, "special_defence": 110, "speed": 90}},
-    {"species": "chesnaught",  "form": "Mega", "aspect": "mega", "type1": "grass",    "type2": "fighting", "ability": "bulletproof",   "baseStats": {"hp": 88, "attack": 137, "defence": 172, "special_attack": 74,  "special_defence": 115, "speed": 44}},
-    {"species": "delphox",     "form": "Mega", "aspect": "mega", "type1": "fire",     "type2": "psychic",  "ability": "levitate",      "baseStats": {"hp": 75, "attack": 69,  "defence": 72,  "special_attack": 159, "special_defence": 125, "speed": 134}},
-    {"species": "clefable",    "form": "Mega", "aspect": "mega", "type1": "fairy",    "type2": "flying",   "ability": "magicbounce",   "baseStats": {"hp": 95, "attack": 80,  "defence": 93,  "special_attack": 135, "special_defence": 110, "speed": 70}},
-    {"species": "victreebel",  "form": "Mega", "aspect": "mega", "type1": "grass",    "type2": "poison",   "ability": "innardsout",    "baseStats": {"hp": 80, "attack": 125, "defence": 85,  "special_attack": 135, "special_defence": 95,  "speed": 70}},
-    {"species": "starmie",     "form": "Mega", "aspect": "mega", "type1": "water",    "type2": "psychic",  "ability": "hugepower",     "baseStats": {"hp": 60, "attack": 140, "defence": 105, "special_attack": 130, "special_defence": 105, "speed": 120}},
-    {"species": "skarmory",    "form": "Mega", "aspect": "mega", "type1": "steel",    "type2": "flying",   "ability": "stalwart",      "baseStats": {"hp": 65, "attack": 140, "defence": 110, "special_attack": 40,  "special_defence": 100, "speed": 110}},
-    {"species": "froslass",    "form": "Mega", "aspect": "mega", "type1": "ice",      "type2": "ghost",    "ability": "snowwarning",   "baseStats": {"hp": 70, "attack": 80,  "defence": 70,  "special_attack": 140, "special_defence": 100, "speed": 120}},
-    {"species": "emboar",      "form": "Mega", "aspect": "mega", "type1": "fire",     "type2": "fighting", "ability": "moldbreaker",   "baseStats": {"hp": 110,"attack": 148, "defence": 75,  "special_attack": 110, "special_defence": 110, "speed": 75}},
-    {"species": "scolipede",   "form": "Mega", "aspect": "mega", "type1": "bug",      "type2": "poison",   "ability": null,            "baseStats": {"hp": 60, "attack": 140, "defence": 149, "special_attack": 75,  "special_defence": 99,  "speed": 62}},
-    {"species": "eelektross",  "form": "Mega", "aspect": "mega", "type1": "electric", "type2": null,       "ability": null,            "baseStats": {"hp": 85, "attack": 145, "defence": 80,  "special_attack": 135, "special_defence": 90,  "speed": 80}},
-    {"species": "golurk",      "form": "Mega", "aspect": "mega", "type1": "ground",   "type2": "ghost",    "ability": "unseenfist",    "baseStats": {"hp": 89, "attack": 159, "defence": 105, "special_attack": 70,  "special_defence": 105, "speed": 55}},
-    {"species": "pyroar",      "form": "Mega", "aspect": "mega", "type1": "fire",     "type2": "normal",   "ability": null,            "baseStats": {"hp": 86, "attack": 88,  "defence": 92,  "special_attack": 129, "special_defence": 86,  "speed": 126}},
-    {"species": "floette",     "form": "Mega", "aspect": "mega", "type1": "fairy",    "type2": null,       "ability": "fairyaura",     "baseStats": {"hp": 74, "attack": 85,  "defence": 87,  "special_attack": 155, "special_defence": 148, "speed": 102}},
-    {"species": "meowstic",    "form": "Mega", "aspect": "mega", "type1": "psychic",  "type2": null,       "ability": "trace",         "baseStats": {"hp": 74, "attack": 48,  "defence": 76,  "special_attack": 143, "special_defence": 101, "speed": 124}},
-    {"species": "malamar",     "form": "Mega", "aspect": "mega", "type1": "dark",     "type2": "psychic",  "ability": null,            "baseStats": {"hp": 86, "attack": 102, "defence": 88,  "special_attack": 98,  "special_defence": 120, "speed": 88}},
-    {"species": "barbaracle",  "form": "Mega", "aspect": "mega", "type1": "rock",     "type2": "fighting", "ability": null,            "baseStats": {"hp": 72, "attack": 140, "defence": 130, "special_attack": 64,  "special_defence": 106, "speed": 88}},
-    {"species": "dragalge",    "form": "Mega", "aspect": "mega", "type1": "poison",   "type2": "dragon",   "ability": null,            "baseStats": {"hp": 65, "attack": 85,  "defence": 105, "special_attack": 132, "special_defence": 163, "speed": 44}},
-    {"species": "hawlucha",    "form": "Mega", "aspect": "mega", "type1": "fighting", "type2": "flying",   "ability": "noguard",       "baseStats": {"hp": 78, "attack": 137, "defence": 100, "special_attack": 74,  "special_defence": 93,  "speed": 118}},
-    {"species": "zygarde",     "form": "Mega", "aspect": "mega", "type1": "dragon",   "type2": "ground",   "ability": null,            "baseStats": {"hp": 216,"attack": 70,  "defence": 91,  "special_attack": 216, "special_defence": 85,  "speed": 100}},
-    {"species": "drampa",      "form": "Mega", "aspect": "mega", "type1": "normal",   "type2": "dragon",   "ability": "berserk",       "baseStats": {"hp": 78, "attack": 85,  "defence": 110, "special_attack": 160, "special_defence": 116, "speed": 36}},
-    {"species": "falinks",     "form": "Mega", "aspect": "mega", "type1": "fighting", "type2": null,       "ability": null,            "baseStats": {"hp": 65, "attack": 135, "defence": 135, "special_attack": 70,  "special_defence": 65,  "speed": 100}},
-    {"species": "raichu",      "form": "Mega-X","aspect": "mega_x","type1": "electric","type2": null,      "ability": null,            "baseStats": {"hp": 60, "attack": 135, "defence": 95,  "special_attack": 90,  "special_defence": 95,  "speed": 110}},
-    {"species": "raichu",      "form": "Mega-Y","aspect": "mega_y","type1": "electric","type2": null,      "ability": null,            "baseStats": {"hp": 60, "attack": 100, "defence": 55,  "special_attack": 160, "special_defence": 80,  "speed": 130}},
-
-    {"species": "crabominable", "form": "Mega", "aspect": "mega", "type1": "fighting","type2": "ice",      "ability": "ironfist",      "baseStats": null},
-    {"species": "scovillain",   "form": "Mega", "aspect": "mega", "type1": "grass",   "type2": "fire",     "ability": "spicy_spray",   "baseStats": null},
-    {"species": "glimmora",     "form": "Mega", "aspect": "mega", "type1": "rock",    "type2": "poison",   "ability": "adaptability",  "baseStats": null},
-    {"species": "chimecho",     "form": "Mega", "aspect": "mega", "type1": "psychic", "type2": "steel",    "ability": "levitate",      "baseStats": null}
-  ]
+  {
+   "species": "meganium",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "grass",
+   "type2": "fairy",
+   "ability": "mega_sol",
+   "baseStats": {
+    "hp": 80,
+    "attack": 92,
+    "defence": 115,
+    "special_attack": 143,
+    "special_defence": 115,
+    "speed": 80
+   }
+  },
+  {
+   "species": "feraligatr",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "water",
+   "type2": "dragon",
+   "ability": "dragonize",
+   "baseStats": {
+    "hp": 85,
+    "attack": 160,
+    "defence": 125,
+    "special_attack": 89,
+    "special_defence": 93,
+    "speed": 78
+   }
+  },
+  {
+   "species": "dragonite",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "dragon",
+   "type2": "flying",
+   "ability": "multiscale",
+   "baseStats": {
+    "hp": 91,
+    "attack": 124,
+    "defence": 115,
+    "special_attack": 145,
+    "special_defence": 125,
+    "speed": 100
+   }
+  },
+  {
+   "species": "excadrill",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "ground",
+   "type2": "steel",
+   "ability": "piercing_drill",
+   "baseStats": {
+    "hp": 110,
+    "attack": 165,
+    "defence": 100,
+    "special_attack": 65,
+    "special_defence": 65,
+    "speed": 103
+   }
+  },
+  {
+   "species": "scrafty",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "dark",
+   "type2": "fighting",
+   "ability": "intimidate",
+   "baseStats": {
+    "hp": 65,
+    "attack": 130,
+    "defence": 135,
+    "special_attack": 55,
+    "special_defence": 135,
+    "speed": 68
+   }
+  },
+  {
+   "species": "chandelure",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "ghost",
+   "type2": "fire",
+   "ability": "infiltrator",
+   "baseStats": {
+    "hp": 60,
+    "attack": 75,
+    "defence": 110,
+    "special_attack": 175,
+    "special_defence": 110,
+    "speed": 90
+   }
+  },
+  {
+   "species": "chesnaught",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "grass",
+   "type2": "fighting",
+   "ability": "bulletproof",
+   "baseStats": {
+    "hp": 88,
+    "attack": 137,
+    "defence": 172,
+    "special_attack": 74,
+    "special_defence": 115,
+    "speed": 44
+   }
+  },
+  {
+   "species": "delphox",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fire",
+   "type2": "psychic",
+   "ability": "levitate",
+   "baseStats": {
+    "hp": 75,
+    "attack": 69,
+    "defence": 72,
+    "special_attack": 159,
+    "special_defence": 125,
+    "speed": 134
+   }
+  },
+  {
+   "species": "clefable",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fairy",
+   "type2": "flying",
+   "ability": "magicbounce",
+   "baseStats": {
+    "hp": 95,
+    "attack": 80,
+    "defence": 93,
+    "special_attack": 135,
+    "special_defence": 110,
+    "speed": 70
+   }
+  },
+  {
+   "species": "victreebel",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "grass",
+   "type2": "poison",
+   "ability": "innardsout",
+   "baseStats": {
+    "hp": 80,
+    "attack": 125,
+    "defence": 85,
+    "special_attack": 135,
+    "special_defence": 95,
+    "speed": 70
+   }
+  },
+  {
+   "species": "starmie",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "water",
+   "type2": "psychic",
+   "ability": "hugepower",
+   "baseStats": {
+    "hp": 60,
+    "attack": 140,
+    "defence": 105,
+    "special_attack": 130,
+    "special_defence": 105,
+    "speed": 120
+   }
+  },
+  {
+   "species": "skarmory",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "steel",
+   "type2": "flying",
+   "ability": "stalwart",
+   "baseStats": {
+    "hp": 65,
+    "attack": 140,
+    "defence": 110,
+    "special_attack": 40,
+    "special_defence": 100,
+    "speed": 110
+   }
+  },
+  {
+   "species": "froslass",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "ice",
+   "type2": "ghost",
+   "ability": "snowwarning",
+   "baseStats": {
+    "hp": 70,
+    "attack": 80,
+    "defence": 70,
+    "special_attack": 140,
+    "special_defence": 100,
+    "speed": 120
+   }
+  },
+  {
+   "species": "emboar",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fire",
+   "type2": "fighting",
+   "ability": "moldbreaker",
+   "baseStats": {
+    "hp": 110,
+    "attack": 148,
+    "defence": 75,
+    "special_attack": 110,
+    "special_defence": 110,
+    "speed": 75
+   }
+  },
+  {
+   "species": "scolipede",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "bug",
+   "type2": "poison",
+   "ability": "shellarmor",
+   "baseStats": {
+    "hp": 60,
+    "attack": 140,
+    "defence": 149,
+    "special_attack": 75,
+    "special_defence": 99,
+    "speed": 62
+   }
+  },
+  {
+   "species": "eelektross",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "electric",
+   "type2": null,
+   "ability": "eelevate",
+   "baseStats": {
+    "hp": 85,
+    "attack": 145,
+    "defence": 80,
+    "special_attack": 135,
+    "special_defence": 90,
+    "speed": 80
+   }
+  },
+  {
+   "species": "golurk",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "ground",
+   "type2": "ghost",
+   "ability": "unseenfist",
+   "baseStats": {
+    "hp": 89,
+    "attack": 159,
+    "defence": 105,
+    "special_attack": 70,
+    "special_defence": 105,
+    "speed": 55
+   }
+  },
+  {
+   "species": "pyroar",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fire",
+   "type2": "normal",
+   "ability": "fire_mane",
+   "baseStats": {
+    "hp": 86,
+    "attack": 88,
+    "defence": 92,
+    "special_attack": 129,
+    "special_defence": 86,
+    "speed": 126
+   }
+  },
+  {
+   "species": "floette",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fairy",
+   "type2": null,
+   "ability": "fairyaura",
+   "baseStats": {
+    "hp": 74,
+    "attack": 85,
+    "defence": 87,
+    "special_attack": 155,
+    "special_defence": 148,
+    "speed": 102
+   }
+  },
+  {
+   "species": "meowstic",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "psychic",
+   "type2": null,
+   "ability": "trace",
+   "baseStats": {
+    "hp": 74,
+    "attack": 48,
+    "defence": 76,
+    "special_attack": 143,
+    "special_defence": 101,
+    "speed": 124
+   }
+  },
+  {
+   "species": "malamar",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "dark",
+   "type2": "psychic",
+   "ability": "contrary",
+   "baseStats": {
+    "hp": 86,
+    "attack": 102,
+    "defence": 88,
+    "special_attack": 98,
+    "special_defence": 120,
+    "speed": 88
+   }
+  },
+  {
+   "species": "barbaracle",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "rock",
+   "type2": "fighting",
+   "ability": "toughclaws",
+   "baseStats": {
+    "hp": 72,
+    "attack": 140,
+    "defence": 130,
+    "special_attack": 64,
+    "special_defence": 106,
+    "speed": 88
+   }
+  },
+  {
+   "species": "dragalge",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "poison",
+   "type2": "dragon",
+   "ability": "regenerator",
+   "baseStats": {
+    "hp": 65,
+    "attack": 85,
+    "defence": 105,
+    "special_attack": 132,
+    "special_defence": 163,
+    "speed": 44
+   }
+  },
+  {
+   "species": "hawlucha",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fighting",
+   "type2": "flying",
+   "ability": "noguard",
+   "baseStats": {
+    "hp": 78,
+    "attack": 137,
+    "defence": 100,
+    "special_attack": 74,
+    "special_defence": 93,
+    "speed": 118
+   }
+  },
+  {
+   "species": "drampa",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "normal",
+   "type2": "dragon",
+   "ability": "berserk",
+   "baseStats": {
+    "hp": 78,
+    "attack": 85,
+    "defence": 110,
+    "special_attack": 160,
+    "special_defence": 116,
+    "speed": 36
+   }
+  },
+  {
+   "species": "falinks",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fighting",
+   "type2": null,
+   "ability": "defiant",
+   "baseStats": {
+    "hp": 65,
+    "attack": 135,
+    "defence": 135,
+    "special_attack": 70,
+    "special_defence": 65,
+    "speed": 100
+   }
+  },
+  {
+   "species": "crabominable",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fighting",
+   "type2": "ice",
+   "ability": "ironfist",
+   "baseStats": {
+    "hp": 97,
+    "attack": 157,
+    "defence": 122,
+    "special_attack": 62,
+    "special_defence": 107,
+    "speed": 33
+   }
+  },
+  {
+   "species": "scovillain",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "grass",
+   "type2": "fire",
+   "ability": "spicy_spray",
+   "baseStats": {
+    "hp": 65,
+    "attack": 138,
+    "defence": 85,
+    "special_attack": 138,
+    "special_defence": 85,
+    "speed": 75
+   }
+  },
+  {
+   "species": "glimmora",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "rock",
+   "type2": "poison",
+   "ability": "adaptability",
+   "baseStats": {
+    "hp": 83,
+    "attack": 90,
+    "defence": 105,
+    "special_attack": 150,
+    "special_defence": 96,
+    "speed": 101
+   }
+  },
+  {
+   "species": "chimecho",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "psychic",
+   "type2": "steel",
+   "ability": "levitate",
+   "baseStats": {
+    "hp": 75,
+    "attack": 50,
+    "defence": 110,
+    "special_attack": 135,
+    "special_defence": 120,
+    "speed": 65
+   }
+  },
+  {
+   "species": "raichu",
+   "form": "Mega-X",
+   "aspect": "mega-x",
+   "type1": "electric",
+   "type2": null,
+   "ability": "electricsurge",
+   "baseStats": {
+    "hp": 60,
+    "attack": 135,
+    "defence": 95,
+    "special_attack": 90,
+    "special_defence": 95,
+    "speed": 110
+   }
+  },
+  {
+   "species": "raichu",
+   "form": "Mega-Y",
+   "aspect": "mega-y",
+   "type1": "electric",
+   "type2": null,
+   "ability": "noguard",
+   "baseStats": {
+    "hp": 60,
+    "attack": 100,
+    "defence": 55,
+    "special_attack": 160,
+    "special_defence": 80,
+    "speed": 130
+   }
+  },
+  {
+   "species": "staraptor",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fighting",
+   "type2": "flying",
+   "ability": "contrary",
+   "baseStats": {
+    "hp": 85,
+    "attack": 140,
+    "defence": 100,
+    "special_attack": 60,
+    "special_defence": 90,
+    "speed": 110
+   }
+  },
+  {
+   "species": "darkrai",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "dark",
+   "type2": null,
+   "ability": "baddreams",
+   "baseStats": {
+    "hp": 70,
+    "attack": 120,
+    "defence": 130,
+    "special_attack": 165,
+    "special_defence": 130,
+    "speed": 85
+   }
+  },
+  {
+   "species": "garchomp",
+   "form": "Mega-Z",
+   "aspect": "mega-z",
+   "type1": "dragon",
+   "type2": null,
+   "ability": "sandveil",
+   "baseStats": {
+    "hp": 108,
+    "attack": 130,
+    "defence": 85,
+    "special_attack": 141,
+    "special_defence": 85,
+    "speed": 151
+   }
+  },
+  {
+   "species": "lucario",
+   "form": "Mega-Z",
+   "aspect": "mega-z",
+   "type1": "fighting",
+   "type2": "steel",
+   "ability": "steadfast",
+   "baseStats": {
+    "hp": 70,
+    "attack": 100,
+    "defence": 70,
+    "special_attack": 164,
+    "special_defence": 70,
+    "speed": 151
+   }
+  },
+  {
+   "species": "heatran",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "fire",
+   "type2": "steel",
+   "ability": "flashfire",
+   "baseStats": {
+    "hp": 91,
+    "attack": 120,
+    "defence": 106,
+    "special_attack": 175,
+    "special_defence": 141,
+    "speed": 67
+   }
+  },
+  {
+   "species": "magearna",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "steel",
+   "type2": "fairy",
+   "ability": "soulheart",
+   "baseStats": {
+    "hp": 80,
+    "attack": 125,
+    "defence": 115,
+    "special_attack": 170,
+    "special_defence": 115,
+    "speed": 95
+   }
+  },
+  {
+   "species": "zeraora",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "electric",
+   "type2": null,
+   "ability": "voltabsorb",
+   "baseStats": {
+    "hp": 88,
+    "attack": 157,
+    "defence": 75,
+    "special_attack": 147,
+    "special_defence": 80,
+    "speed": 153
+   }
+  },
+  {
+   "species": "baxcalibur",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "dragon",
+   "type2": "ice",
+   "ability": "thermalexchange",
+   "baseStats": {
+    "hp": 115,
+    "attack": 175,
+    "defence": 117,
+    "special_attack": 105,
+    "special_defence": 101,
+    "speed": 87
+   }
+  },
+  {
+   "species": "golisopod",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "bug",
+   "type2": "steel",
+   "ability": "emergencyexit",
+   "baseStats": {
+    "hp": 75,
+    "attack": 150,
+    "defence": 175,
+    "special_attack": 70,
+    "special_defence": 120,
+    "speed": 40
+   }
+  },
+  {
+   "species": "tatsugiri",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "dragon",
+   "type2": "water",
+   "ability": "commander",
+   "baseStats": {
+    "hp": 68,
+    "attack": 65,
+    "defence": 90,
+    "special_attack": 135,
+    "special_defence": 125,
+    "speed": 92
+   }
+  },
+  {
+   "species": "absol",
+   "form": "Mega-Z",
+   "aspect": "mega-z",
+   "type1": "dark",
+   "type2": "ghost",
+   "ability": "pressure",
+   "baseStats": {
+    "hp": 65,
+    "attack": 154,
+    "defence": 60,
+    "special_attack": 75,
+    "special_defence": 60,
+    "speed": 151
+   }
+  }
+ ],
+ "_pending_comment": "All Z-A + Mega Dimension DLC mega formes are now shipped. Those that Pokemon Champions has NOT yet assigned a mega ability (Darkrai, Garchomp-Z, Lucario-Z, Heatran, Magearna, Zeraora, Baxcalibur, Golisopod, Tatsugiri, Absol-Z) temporarily KEEP their base-form primary ability as a placeholder; update the 'ability' field here when Champions reveals the real one, then re-run gen_custom_megas.py.",
+ "pending": []
 }

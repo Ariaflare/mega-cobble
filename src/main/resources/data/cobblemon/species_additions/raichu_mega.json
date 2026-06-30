@@ -1,0 +1,45 @@
+{
+  "target": "cobblemon:raichu",
+  "forms": [
+    {
+      "name": "Mega-X",
+      "baseStats": {
+        "hp": 60,
+        "attack": 135,
+        "defence": 95,
+        "special_attack": 90,
+        "special_defence": 95,
+        "speed": 110
+      },
+      "primaryType": "electric",
+      "abilities": [
+        "electricsurge"
+      ],
+      "aspects": [
+        "mega-x"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Raichunite X"
+    },
+    {
+      "name": "Mega-Y",
+      "baseStats": {
+        "hp": 60,
+        "attack": 100,
+        "defence": 55,
+        "special_attack": 160,
+        "special_defence": 80,
+        "speed": 130
+      },
+      "primaryType": "electric",
+      "abilities": [
+        "noguard"
+      ],
+      "aspects": [
+        "mega-y"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Raichunite Y"
+    }
+  ]
+}

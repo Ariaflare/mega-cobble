@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:tatsugiri",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 68,
+        "attack": 65,
+        "defence": 90,
+        "special_attack": 135,
+        "special_defence": 125,
+        "speed": 92
+      },
+      "primaryType": "dragon",
+      "abilities": [
+        "commander"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Tatsugirite",
+      "secondaryType": "water"
+    }
+  ]
+}

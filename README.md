@@ -320,7 +320,24 @@ and kept only as a local reference.
 
 Newest first.
 
+- **Every Z-A + Mega Dimension DLC mega (44 total)** — added the full Pokémon Champions mega roster on
+  top of the original 19. The 15 Champions megas (Raichu X/Y, Barbaracle, Chimecho, Crabominable,
+  Dragalge, Eelektross, Falinks, Glimmora, Malamar, Pyroar, Scolipede, Scovillain, Scrafty, Staraptor)
+  ship with **Serebii-verified types, stats, and abilities** (every ability cross-checked — the original
+  19 were already correct; a couple of community tables were wrong). The 10 DLC legendaries (Darkrai,
+  Garchomp-Z, Lucario-Z, Heatran, Magearna, Zeraora, Baxcalibur, Golisopod, Tatsugiri, Absol-Z) ship
+  too, temporarily **keeping their base-form ability** as a placeholder until Champions assigns the real
+  one (documented in `za_megas.json`). Three brand-new abilities implemented as Showdown defs:
+  **Spicy Spray** (burn the attacker on hit), **Fire Mane** (Fire ×1.5), **Eelevate** (Ground-move
+  immunity, Mold-Breaker-bypassable + Thousand Arrows excepted, plus Beast-Boost-on-KO — the broader
+  hazard/terrain immunity isn't replicable without patching Cobblemon's sim, so it's left out). The
+  generator now supports **multi-form species** (Raichu X/Y) and form-suffixed mega species
+  (`Raichu-Mega-X`, `Garchomp-Mega-Z`, distinct from the classic ORAS megas). 91 mega stones total.
+- **Mega Sol now emulates harsh sun properly** — besides Fire ×1.5 / Water ×0.5, **Solar Beam and Solar
+  Blade fire in a single turn** (no charge, via `onChargeMove` like Power Herb) and **skip the
+  rain/sand/snow power penalty** — matching the in-game "as if harsh sunlight" behaviour.
 - **Hotfix: custom-ability injection crashed battle start (and broke Z-A megas)** — the ability defs
+  were injected under the registry key `abilities`, but the sim's key is `ability` (singular), so
   were injected under the registry key `abilities`, but the sim's key is `ability` (singular), so
   `getRegistry("abilities")` returned undefined and `injectAll` threw `Cannot read property 'register'
   of undefined` at every battle start. Worse, that bad key was sent *first*, so the throw aborted the

@@ -1,6 +1,6 @@
 {
   "cobblemon.ability.megasol": "Mega Sol",
-  "cobblemon.ability.megasol.desc": "This Pokémon's moves act as if harsh sunlight is active: Fire-type power ×1.5, Water-type power ×0.5.",
+  "cobblemon.ability.megasol.desc": "This Pokemon's moves act as if harsh sunlight is active: Fire-type power x1.5, Water-type power x0.5, and Solar Beam/Solar Blade fire in one turn with no weather penalty.",
   "cobblemon.ability.dragonize": "Dragonize",
   "cobblemon.ability.dragonize.desc": "This Pokemon's Normal-type moves become Dragon-type and gain a small power boost.",
   "cobblemon.ability.piercingdrill": "Piercing Drill",
@@ -32,5 +32,11 @@
   "megacobble.command.skin.cleared_global": "Cleared the global skin for '%s' (%s loaded refreshed).",
   "megacobble.command.variant.unknown": "Unknown variant: %s",
   "megacobble.command.variant.applied": "Applied variant '%s'.",
-  "megacobble.command.variant.removed": "Removed variant '%s'."
+  "megacobble.command.variant.removed": "Removed variant '%s'.",
+  "cobblemon.ability.eelevate": "Eelevate",
+  "cobblemon.ability.eelevate.desc": "This Pokemon is immune to Ground-type moves, and KOing a Pokemon raises its highest stat by 1.",
+  "cobblemon.ability.firemane": "Fire Mane",
+  "cobblemon.ability.firemane.desc": "This Pokemon's Fire-type moves have 1.5x power.",
+  "cobblemon.ability.spicyspray": "Spicy Spray",
+  "cobblemon.ability.spicyspray.desc": "When this Pokemon is hit by a damaging move, the attacker is burned."
 }

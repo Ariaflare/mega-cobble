@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:scovillain",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 65,
+        "attack": 138,
+        "defence": 85,
+        "special_attack": 138,
+        "special_defence": 85,
+        "speed": 75
+      },
+      "primaryType": "grass",
+      "abilities": [
+        "spicyspray"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Scovillite",
+      "secondaryType": "fire"
+    }
+  ]
+}

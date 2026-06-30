@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:dragalge",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 65,
+        "attack": 85,
+        "defence": 105,
+        "special_attack": 132,
+        "special_defence": 163,
+        "speed": 44
+      },
+      "primaryType": "poison",
+      "abilities": [
+        "regenerator"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Dragalgite",
+      "secondaryType": "dragon"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:scrafty",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 65,
+        "attack": 130,
+        "defence": 135,
+        "special_attack": 55,
+        "special_defence": 135,
+        "speed": 68
+      },
+      "primaryType": "dark",
+      "abilities": [
+        "intimidate"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Scraftite",
+      "secondaryType": "fighting"
+    }
+  ]
+}

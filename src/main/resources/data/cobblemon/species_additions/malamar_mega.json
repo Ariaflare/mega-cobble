@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:malamar",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 86,
+        "attack": 102,
+        "defence": 88,
+        "special_attack": 98,
+        "special_defence": 120,
+        "speed": 88
+      },
+      "primaryType": "dark",
+      "abilities": [
+        "contrary"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Malamarite",
+      "secondaryType": "psychic"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:magearna",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 80,
+        "attack": 125,
+        "defence": 115,
+        "special_attack": 170,
+        "special_defence": 115,
+        "speed": 95
+      },
+      "primaryType": "steel",
+      "abilities": [
+        "soulheart"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Magearnite",
+      "secondaryType": "fairy"
+    }
+  ]
+}

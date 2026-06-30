@@ -1,0 +1,25 @@
+{
+  "target": "cobblemon:zeraora",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 88,
+        "attack": 157,
+        "defence": 75,
+        "special_attack": 147,
+        "special_defence": 80,
+        "speed": 153
+      },
+      "primaryType": "electric",
+      "abilities": [
+        "voltabsorb"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Zeraorite"
+    }
+  ]
+}

@@ -13,12 +13,24 @@ import os, json, shutil
 ROOT = r"E:/mod dev/mega co/src/main/resources"
 
 # Species we ship a mega for (complete data in za_megas.json) -> canonical Mega Stone name.
+# A species with multiple mega formes maps to a {form-name: stone-name} dict (e.g. Raichu X/Y).
 STONE_NAMES = {
  'greninja':'Greninjite','meganium':'Meganiumite','feraligatr':'Feraligite','dragonite':'Dragoninite',
  'excadrill':'Excadrite','chandelure':'Chandelurite','chesnaught':'Chesnaughtite','delphox':'Delphoxite',
  'clefable':'Clefablite','victreebel':'Victreebelite','starmie':'Starminite','skarmory':'Skarmorite',
  'froslass':'Froslassite','emboar':'Emboarite','golurk':'Golurkite','floette':'Floettite',
  'meowstic':'Meowsticite','hawlucha':'Hawluchanite','drampa':'Drampanite',
+ # Mega Dimension DLC megas now in Pokemon Champions
+ 'barbaracle':'Barbaraclite','chimecho':'Chimechite','crabominable':'Crabominite','dragalge':'Dragalgite',
+ 'eelektross':'Eelektrite','falinks':'Falinksite','glimmora':'Glimmorite','malamar':'Malamarite',
+ 'pyroar':'Pyroarite','scolipede':'Scolipite','scovillain':'Scovillite','scrafty':'Scraftite',
+ 'staraptor':'Staraptite',
+ 'raichu':{'Mega-X':'Raichunite X','Mega-Y':'Raichunite Y'},
+ # DLC legendaries: shipped with their base ability as a placeholder until Champions assigns one.
+ # Garchomp/Lucario/Absol get a NEW "Z" mega distinct from their classic ORAS mega.
+ 'darkrai':'Darkraite','garchomp':'Garchompite Z','lucario':'Lucarionite Z','heatran':'Heatranite',
+ 'magearna':'Magearnite','zeraora':'Zeraorite','baxcalibur':'Baxcalibite','golisopod':'Golisopite',
+ 'tatsugiri':'Tatsugirite','absol':'Absolite Z',
 }
 
 # Stones restricted to a specific form aspect: the held-item manager only exposes them to the
@@ -28,13 +40,17 @@ REQUIRED_ASPECT = {
 }
 
 # za_megas ability value -> Showdown ability id, for the brand-new abilities.
-NEW_ABILITY_ID = {'mega_sol':'megasol','dragonize':'dragonize','piercing_drill':'piercingdrill'}
+NEW_ABILITY_ID = {'mega_sol':'megasol','dragonize':'dragonize','piercing_drill':'piercingdrill',
+ 'spicy_spray':'spicyspray','fire_mane':'firemane'}
 
 # Display name + description (shown in the summary screen via cobblemon.ability.<id> lang keys).
 NEW_ABILITY_DESC = {
  'dragonize': "This Pokemon's Normal-type moves become Dragon-type and gain a small power boost.",
  'piercingdrill': "This Pokemon's contact moves strike through Protect and Detect.",
- 'megasol': "This Pokemon's moves act as if harsh sunlight is active: Fire-type power x1.5, Water-type power x0.5.",
+ 'megasol': "This Pokemon's moves act as if harsh sunlight is active: Fire-type power x1.5, Water-type power x0.5, and Solar Beam/Solar Blade fire in one turn with no weather penalty.",
+ 'spicyspray': "When this Pokemon is hit by a damaging move, the attacker is burned.",
+ 'firemane': "This Pokemon's Fire-type moves have 1.5x power.",
+ 'eelevate': "This Pokemon is immune to Ground-type moves, and KOing a Pokemon raises its highest stat by 1.",
 }
 
 # Minimal, original implementations of the new abilities (the sim eval()s these).
@@ -46,11 +62,31 @@ NEW_ABILITY_JS = {
    " onBasePower(bp, pokemon, target, move) { if (move.typeChangerBoosted === this.effect) return this.chainModify([4915, 4096]); } }"),
  'piercingdrill': ("Piercing Drill",
    "{ name: 'Piercing Drill', onModifyMove(move) { if (move.flags['contact']) { move.flags['protect'] = 0; } } }"),
- # Mega Sol: the user's moves behave as if harsh sunlight (Sunny Day) is up -- Fire x1.5, Water x0.5
- # base power. Mirrors the sun weather damage modifier, applied to this Pokemon's own attacks.
+ # Mega Sol: this Pokemon's moves behave as if harsh sunlight (Sunny Day) is up, without setting
+ # weather. Fire x1.5 / Water x0.5 base power; Solar Beam/Solar Blade fire in one turn (no charge,
+ # like Power Herb) and skip the rain/sand/snow power penalty.
  'megasol': ("Mega Sol",
-   "{ name: 'Mega Sol', onBasePowerPriority: 21,"
-   " onBasePower(basePower, attacker, defender, move) { if (move.type === 'Fire') { return this.chainModify(1.5); } if (move.type === 'Water') { return this.chainModify(0.5); } } }"),
+   "{ name: 'Mega Sol',"
+   " onChargeMove(pokemon, target, move) { if (move.id === 'solarbeam' || move.id === 'solarblade') { this.attrLastMove('[still]'); this.addMove('-anim', pokemon, move.name, target); return false; } },"
+   " onBasePowerPriority: 21,"
+   " onBasePower(basePower, attacker, defender, move) { if (move.type === 'Fire') { return this.chainModify(1.5); } if (move.type === 'Water') { return this.chainModify(0.5); } if ((move.id === 'solarbeam' || move.id === 'solarblade') && ['raindance', 'primordialsea', 'sandstorm', 'hail', 'snow'].includes(attacker.effectiveWeather())) { return this.chainModify(2); } } }"),
+ # Spicy Spray (Mega Scovillain): burn the attacker whenever this Pokemon is hit by a damaging move.
+ 'spicyspray': ("Spicy Spray",
+   "{ name: 'Spicy Spray', onDamagingHit(damage, target, source, move) { source.trySetStatus('brn', target); } }"),
+ # Fire Mane (Mega Pyroar): this Pokemon's Fire-type moves deal 1.5x damage.
+ 'firemane': ("Fire Mane",
+   "{ name: 'Fire Mane', onBasePowerPriority: 19,"
+   " onBasePower(basePower, attacker, defender, move) { if (move.type === 'Fire') { return this.chainModify(1.5); } } }"),
+ # Eelevate (Mega Eelektross): Levitate-style Ground-move immunity + Beast Boost (raise highest stat
+ # by 1 on a KO). NOTE: the sim's isGrounded() is hardcoded to the literal 'levitate' id and Cobblemon's
+ # injection API can't override it, so the broader "ungrounded" immunities (entry hazards, Arena Trap,
+ # terrain) can't be granted without patching the sim. We do the Ground-MOVE immunity faithfully via
+ # onTryHit: breakable (Mold Breaker bypasses it) and skipped for moves that ignore Ground immunity
+ # (e.g. Thousand Arrows).
+ 'eelevate': ("Eelevate",
+   "{ name: 'Eelevate', flags: { breakable: 1 },"
+   " onTryHit(target, source, move) { if (target !== source && move.type === 'Ground' && !(move.ignoreImmunity === true || (move.ignoreImmunity && move.ignoreImmunity['Ground']))) { this.add('-immune', target, '[from] ability: Eelevate'); return null; } },"
+   " onSourceAfterFaint(length, target, source, effect) { if (effect && effect.effectType === 'Move') { const bestStat = source.getBestStat(true, true); this.boost({ [bestStat]: length }, source); } } }"),
 }
 
 ZA = json.load(open(os.path.join(ROOT,'za_megas.json'),encoding='utf-8'))['megas']
@@ -65,54 +101,73 @@ sa_dir = os.path.join(ROOT,'data/cobblemon/species_additions')
 if os.path.isdir(sa_dir): shutil.rmtree(sa_dir)
 os.makedirs(sa_dir,exist_ok=True)
 
-held_items = {}
-abilities = {}
-count=0; num=9300
+def sub(asp, shiny=False):
+    return {"aspects":([asp,"shiny"] if shiny else [asp]),"poser":"cobblemon:substitute",
+            "model":"cobblemon:substitute.geo",
+            "texture":"cobblemon:textures/pokemon/substitute"+("_shiny" if shiny else "")+".png","layers":[]}
+
+def stone_name_for(sp, form):
+    sn=STONE_NAMES[sp]
+    return sn[form] if isinstance(sn, dict) else sn
+
+# Group the shippable mega entries by species: a species can have more than one mega forme
+# (e.g. Raichu -> Mega-X / Mega-Y), which share one resolver + one species_addition but get
+# their own Mega Stone each.
+from collections import OrderedDict
+by_species=OrderedDict()
 for e in ZA:
     sp=e['species']
     if sp not in STONE_NAMES: continue
     if e.get('ability') is None or e.get('baseStats') is None: continue
-    stone_name=STONE_NAMES[sp]; stone_id=stone_name.lower()
-    showdown_item=''.join(ch for ch in stone_name.lower() if ch.isalnum())
-    species_cap=sp.capitalize()
-    form=e['form']; aspect=e['aspect']
-    t1=e['type1']; t2=e.get('type2')
-    ab=e['ability']; ab_id=NEW_ABILITY_ID.get(ab, ab)
+    by_species.setdefault(sp, []).append(e)
 
-    # substitute resolver (placeholder; real skins come from an external resource pack)
+held_items = {}
+abilities = {}
+count=0; num=9300
+for sp, entries in by_species.items():
+    species_cap=sp.capitalize()
     req = REQUIRED_ASPECT.get(sp)
-    def sub(asp, shiny=False):
-        return {"aspects":([asp,"shiny"] if shiny else [asp]),"poser":"cobblemon:substitute",
-                "model":"cobblemon:substitute.geo",
-                "texture":"cobblemon:textures/pokemon/substitute"+("_shiny" if shiny else "")+".png","layers":[]}
-    variations=[sub(aspect), sub(aspect, True)]
+
+    # one substitute resolver per species, covering every mega forme's aspect (+ shiny)
+    variations=[]
+    for e in entries:
+        variations += [sub(e['aspect']), sub(e['aspect'], True)]
     if req: variations += [sub(req), sub(req, True)]   # restricted base form (e.g. Eternal Floette) too
     json.dump({"species":f"cobblemon:{sp}","order":5,"variations":variations},
               open(f"{ROOT}/assets/cobblemon/bedrock/pokemon/resolvers/megacobble/{sp}.json","w"),indent=2)
 
-    # cobblemon species_addition (the mega FORM, with requiredItem so Cobblemon feeds the forme to the sim)
-    form_obj={"name":form,"baseStats":e['baseStats'],"primaryType":t1,
-              "abilities":[ab_id],"aspects":[aspect],"battleOnly":True,"requiredItem":stone_name}
-    if t2: form_obj["secondaryType"]=t2
-    json.dump({"target":f"cobblemon:{sp}","forms":[form_obj]},
+    # one species_addition per species, holding all of its mega forms (so X/Y live together)
+    forms=[]
+    for e in entries:
+        ab_id=NEW_ABILITY_ID.get(e['ability'], e['ability'])
+        form_obj={"name":e['form'],"baseStats":e['baseStats'],"primaryType":e['type1'],
+                  "abilities":[ab_id],"aspects":[e['aspect']],"battleOnly":True,
+                  "requiredItem":stone_name_for(sp, e['form'])}
+        if e.get('type2'): form_obj["secondaryType"]=e['type2']
+        forms.append(form_obj)
+    json.dump({"target":f"cobblemon:{sp}","forms":forms},
               open(f"{sa_dir}/{sp}_mega.json","w"),indent=2)
 
-    # stone manifest entry (item + held-item-manager)
-    entry={"stone":stone_id,"name":stone_name,"species":sp,"form":form,"aspect":aspect}
-    if req: entry["requiredAspect"]=req
-    if not any(r['stone']==stone_id for r in manifest):
-        manifest.append(entry)
-
-    # sim injections: mega-stone item, and the new ability if needed
-    held_items[showdown_item]=("{ name: '%s', megaStone: '%s-Mega', megaEvolves: '%s', itemUser: ['%s'], num: %d, gen: 8,"
-        " onTakeItem(item, source) { if (item.megaEvolves === source.baseSpecies.baseSpecies) return false; return true; } }"
-        % (stone_name, species_cap, species_cap, species_cap, num))
-    num+=1
-    if ab_id in NEW_ABILITY_JS:
-        abilities[ab_id]=NEW_ABILITY_JS[ab_id][1]
-        lang[f"cobblemon.ability.{ab_id}"]=NEW_ABILITY_JS[ab_id][0]
-        lang[f"cobblemon.ability.{ab_id}.desc"]=NEW_ABILITY_DESC[ab_id]
-    count+=1
+    # per-forme: stone manifest entry + sim mega-stone item (+ new-ability injection)
+    for e in entries:
+        ab_id=NEW_ABILITY_ID.get(e['ability'], e['ability'])
+        stone_name=stone_name_for(sp, e['form'])
+        stone_id=stone_name.lower().replace(' ','_')
+        showdown_item=''.join(ch for ch in stone_name.lower() if ch.isalnum())
+        mega_species="%s-%s"%(species_cap, e['form'])   # Glimmora-Mega, Raichu-Mega-X, ...
+        entry={"stone":stone_id,"name":stone_name,"species":sp,"form":e['form'],"aspect":e['aspect']}
+        if req: entry["requiredAspect"]=req
+        if not any(r['stone']==stone_id for r in manifest):
+            manifest.append(entry)
+        held_items[showdown_item]=("{ name: '%s', megaStone: '%s', megaEvolves: '%s', itemUser: ['%s'], num: %d, gen: 8,"
+            " onTakeItem(item, source) { if (item.megaEvolves === source.baseSpecies.baseSpecies) return false; return true; } }"
+            % (stone_name, mega_species, species_cap, species_cap, num))
+        num+=1
+        if ab_id in NEW_ABILITY_JS:
+            abilities[ab_id]=NEW_ABILITY_JS[ab_id][1]
+            lang[f"cobblemon.ability.{ab_id}"]=NEW_ABILITY_JS[ab_id][0]
+            lang[f"cobblemon.ability.{ab_id}.desc"]=NEW_ABILITY_DESC[ab_id]
+        count+=1
 
 json.dump(manifest, open(manifest_path,"w"),indent=2)
 json.dump(lang, open(lang_path,"w",encoding='utf-8'),indent=2,ensure_ascii=False)

@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:crabominable",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 97,
+        "attack": 157,
+        "defence": 122,
+        "special_attack": 62,
+        "special_defence": 107,
+        "speed": 33
+      },
+      "primaryType": "fighting",
+      "abilities": [
+        "ironfist"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Crabominite",
+      "secondaryType": "ice"
+    }
+  ]
+}

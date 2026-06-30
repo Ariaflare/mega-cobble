@@ -1,0 +1,25 @@
+{
+  "target": "cobblemon:falinks",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 65,
+        "attack": 135,
+        "defence": 135,
+        "special_attack": 70,
+        "special_defence": 65,
+        "speed": 100
+      },
+      "primaryType": "fighting",
+      "abilities": [
+        "defiant"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Falinksite"
+    }
+  ]
+}
