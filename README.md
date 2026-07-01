@@ -6,9 +6,9 @@ A Fabric add-on that brings **Mega Evolution** to
 [Cobblemon](https://cobblemon.com/) — including a data-driven pipeline for adding
 **custom megas**.
 
-> Status: working in-battle. All **47 classic Gen 6 / ORAS** megas plus **18 Legends Z-A**
-> megas run through Cobblemon's bundled Pokémon Showdown sim, so they're **real in-battle
-> transformations** (correct stats, typing, and ability), not cosmetic-only. The same
+> Status: working in-battle. All **47 classic Gen 6 / ORAS** megas plus the **full Legends: Z-A +
+> Mega Dimension DLC set (44 megas)** run through Cobblemon's bundled Pokémon Showdown sim, so they're
+> **real in-battle transformations** (correct stats, typing, and ability), not cosmetic-only. The same
 > pipeline can add fully custom megas (see *Adding a custom Mega* below).
 
 ## Download
@@ -29,8 +29,9 @@ launch without them:
 
 ## Features
 
-- **47 classic Mega Stones** (every Gen 6 / ORAS mega, incl. Charizard & Mewtwo X/Y) and
-  **18 Legends Z-A** megas, plus a **Key Stone**. They're **vanilla items carrying a
+- **47 classic Mega Stones** (every Gen 6 / ORAS mega, incl. Charizard & Mewtwo X/Y) and the
+  **44 Legends: Z-A / Mega Dimension** megas (incl. Raichu X/Y and the Garchomp/Lucario/Absol "Z"
+  megas), plus a **Key Stone** — **91 stones** in all. They're **vanilla items carrying a
   `minecraft:custom_data` tag** (not registered custom items), so they work on a server even for
   clients without the mod; get them with **`/megacobble give <stone> [count]`**. The mod ships **no
   stone textures** — each stone carries a `custom_model_data` (Key Stone = 1, manifest stones = 2…) so
@@ -292,7 +293,7 @@ It refuses to run on a dirty tree, so commit your work (and any changelog notes)
 
 - Uses **official Mojang mappings** to line up 1:1 with the mappings Cobblemon is developed
   against.
-- Uses **Fabric Loom 1.11 + Gradle 8.14** and applies the **Kotlin plugin** — not for Kotlin
+- Uses **Fabric Loom 1.13.6 + Gradle 8.14** and applies the **Kotlin plugin** — not for Kotlin
   sources (there are none) but so Loom remaps Cobblemon's Kotlin `@Metadata` for the dev
   runtime. Without it, Cobblemon's reflection looks up intermediary names that don't exist
   at runtime and crashes on boot.
@@ -306,15 +307,26 @@ and kept only as a local reference.
 
 ## Limitations / roadmap
 
-- **All megas render the substitute doll** for now. The custom Mega Venusaur model/animation was
-  moved out to `../megacobble-assets/` (not shipped) while the visual delivery is reworked toward a
-  command-driven, resource-pack-based pipeline.
-- **Mega Sol** (Meganium) is a registered stub — the mega works, but the ability has no
-  effect yet (a faithful weather-treatment implementation is TODO).
-- **Mega Floette** is deferred — it should only apply to AZ's Eternal-Flower Floette
-  (`flower-eternal` form), which needs special handling.
-- A handful of Z-A megas are not yet included because their data (ability or stats) is
-  incomplete in `za_megas.json`.
+- **All megas render the substitute doll** for now — no real per-mega models ship yet. The custom Mega
+  Venusaur model/animation was moved out to `../megacobble-assets/` (not shipped) while the visual
+  delivery is reworked toward a command-driven, resource-pack-based pipeline. This is the biggest gap.
+- **The 10 DLC legendaries** (Darkrai, Garchomp-Z, Lucario-Z, Heatran, Magearna, Zeraora, Baxcalibur,
+  Golisopod, Tatsugiri, Absol-Z) temporarily use their **base-form ability** as a placeholder — Pokémon
+  Champions hasn't assigned them a mega ability yet. Update the `ability` field in `za_megas.json` and
+  re-run `gen_custom_megas.py` when the real ones are revealed (flagged there in `_pending_comment`).
+- **Eelevate** (Mega Eelektross) grants Ground-*move* immunity + Beast-Boost-on-KO only. The broader
+  "ungrounded" immunities (entry hazards, Arena Trap, terrain) key off the sim's internal
+  `isGrounded()`, which is hardcoded to the literal Levitate ability and can't be extended through
+  Cobblemon's data-injection API.
+- **Mega Sol** covers the Fire ×1.5 / Water ×0.5 damage modifier and the Solar Beam/Blade single-turn
+  behaviour; the remaining harsh-sun niceties (Growth +2, Synthesis/Moonlight ⅔ healing, Weather Ball →
+  Fire, thaw) aren't implemented.
+- **The original 19 Z-A megas' stats/types are unverified** — only their abilities were confirmed. The
+  newer 25 use Serebii-verified numbers, so a stat/type pass on the original 19 would make the data set
+  consistent.
+- **Most megas aren't battle-tested yet** — the multi-form (Raichu X/Y) and "Z" formes, and the new
+  abilities beyond Mega Sol/Eelevate, load cleanly but haven't all been exercised in an actual battle.
+- **Mega Floette** applies only to AZ's Eternal-Flower Floette (`flower-eternal`) via `requiredAspect`.
 
 ## Changelog
 
@@ -337,7 +349,6 @@ Newest first.
   Blade fire in a single turn** (no charge, via `onChargeMove` like Power Herb) and **skip the
   rain/sand/snow power penalty** — matching the in-game "as if harsh sunlight" behaviour.
 - **Hotfix: custom-ability injection crashed battle start (and broke Z-A megas)** — the ability defs
-  were injected under the registry key `abilities`, but the sim's key is `ability` (singular), so
   were injected under the registry key `abilities`, but the sim's key is `ability` (singular), so
   `getRegistry("abilities")` returned undefined and `injectAll` threw `Cannot read property 'register'
   of undefined` at every battle start. Worse, that bad key was sent *first*, so the throw aborted the
