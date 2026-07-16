@@ -102,6 +102,12 @@ public class MegaCobble implements ModInitializer {
 		if (!(player.level() instanceof ServerLevel level)) {
 			return;
 		}
+		// The wheel-only gate. Enforced here rather than client-side: the client reads its own local
+		// config file, which on a dedicated server has nothing to do with the server's.
+		if (!MegaCobbleConfig.get().allowRideInMega) {
+			player.displayClientMessage(Component.translatable("megacobble.feedback.disabled"), true);
+			return;
+		}
 		Entity entity = level.getEntity(entityId);
 		if (!(entity instanceof PokemonEntity pokemonEntity)) {
 			return;

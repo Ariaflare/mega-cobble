@@ -13,6 +13,7 @@
   "megacobble.feedback.disabled": "World Mega Evolution is disabled.",
   "megacobble.feedback.no_key_stone": "You need to be carrying a Key Stone.",
   "megacobble.feedback.no_mega_stone": "This Pokémon must hold its Mega Stone.",
+  "megacobble.feedback.wrong_mega_stone": "That Mega Stone belongs to a different Pokémon.",
   "megacobble.feedback.no_mega_form": "This Pokémon can't Mega Evolve.",
   "megacobble.command.player_only": "This command must be run by a player.",
   "megacobble.command.worldmega.no_target": "Look at one of your Pokémon, or use 'slot <1-6>'.",

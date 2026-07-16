@@ -66,7 +66,8 @@ public final class MegaEvolution {
 
     /** Outcome of a world (out-of-battle) Mega Evolution request, for command / packet feedback. */
     public enum WorldMegaResult {
-        APPLIED, REVERTED, ALREADY_MEGA, NOT_MEGA, DISABLED, NO_KEY_STONE, NO_MEGA_STONE, NO_MEGA_FORM
+        APPLIED, REVERTED, ALREADY_MEGA, NOT_MEGA, DISABLED, NO_KEY_STONE, NO_MEGA_STONE,
+        WRONG_MEGA_STONE, NO_MEGA_FORM
     }
 
     /**
@@ -225,6 +226,15 @@ public final class MegaEvolution {
             return WorldMegaResult.NO_KEY_STONE;
         }
         MegaStones.MegaStone stone = MegaStones.byCustomData(target.heldItem());
+        // A stone only unlocks *its own* species' mega. Nearly every stone declares form "Mega", so
+        // without this the form lookup below would happily match any mega-capable species — letting
+        // e.g. an Absolite mega-evolve an Abomasnow.
+        if (stone != null && !stoneMatches(stone, target)) {
+            if (cfg.requireMegaStone) {
+                return WorldMegaResult.WRONG_MEGA_STONE;
+            }
+            stone = null; // stone requirement off: ignore the mismatched stone rather than block.
+        }
         if (cfg.requireMegaStone && stone == null) {
             return WorldMegaResult.NO_MEGA_STONE;
         }
@@ -306,6 +316,29 @@ public final class MegaEvolution {
     /** @return true if the player is carrying a Key Stone in their inventory. */
     public static boolean playerHasKeyStone(ServerPlayer player) {
         return player.getInventory().hasAnyMatching(MegaItems::isKeyStone);
+    }
+
+    /**
+     * @return true if this Mega Stone actually unlocks this Pokémon's mega — i.e. it is that
+     * species' stone, and (for stones that name one, e.g. Floettite -> Eternal Flower Floette) the
+     * Pokémon has the required form aspect. Shared by the server gate and the client wheel hint so
+     * both agree on what counts as the "right" stone.
+     */
+    public static boolean stoneMatches(MegaStones.MegaStone stone, Pokemon pokemon) {
+        if (stone == null) {
+            return false;
+        }
+        String species = pokemon.getSpecies().getResourceIdentifier().getPath();
+        if (!stone.species().equalsIgnoreCase(species)) {
+            return false;
+        }
+        String requiredAspect = stone.requiredAspect();
+        return requiredAspect == null || pokemon.getAspects().contains(requiredAspect);
+    }
+
+    /** @return true if the species has any form whose name starts with "Mega". */
+    public static boolean hasMegaForm(Pokemon pokemon) {
+        return firstMegaForm(pokemon) != null;
     }
 
     /** Mega forms already checked for the riding-seats patch (per-form, once). */

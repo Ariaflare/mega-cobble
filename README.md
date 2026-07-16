@@ -82,10 +82,13 @@ exploring, riding, and screenshots.
   must hold its **Mega Stone**. It **reverts automatically when a battle starts**.
 - **Riding** in mega form works for any species that's normally rideable. (Cobblemon ships Mega forms
   with an empty seat list, so we drop that override at mega time to inherit the base species' riding
-  seats.) Setting **`allowRideInMega: false`** hides the "Mega Evolve" option from the wheel, so
-  players can't mega-then-ride via the wheel (the command still works).
-- The wheel option uses Cobblemon's **Mega button icon** and is **greyed out** unless the Pokémon is
-  holding its matching Mega Stone.
+  seats.) Setting **`allowRideInMega: false`** refuses the wheel's "Mega Evolve" request, so players
+  can't mega-then-ride via the wheel (the command still works).
+- The wheel option uses Cobblemon's **Mega button icon** and is **tinted grey** when the client can
+  tell the Pokémon isn't holding its matching Mega Stone. It stays **pressable regardless** — the
+  server is the only side that knows the real held item and the real config, so it makes the call and
+  replies with the reason. (A client-side veto is what made this button silently dead on servers
+  before v0.0.9.)
 - **Configure** it in `config/megacobble.json` or live with **`/megacobble config <key> <true|false>`**
   (op only). Keys: `worldMegaEnabled`, `requireKeyStone`, `requireMegaStone`, `allowRideInMega`,
   `revertOnBattleStart`.
@@ -332,6 +335,22 @@ and kept only as a local reference.
 
 Newest first.
 
+- **Fix: the interaction-wheel Mega Evolve button did nothing on dedicated servers** — the client
+  decided whether the button was usable by reading `Pokemon.heldItem()`, but that is **server-only
+  state Cobblemon never syncs to clients**, so on a server it always read empty: the button greyed
+  out and the press was swallowed (`if (canMega)`) without sending anything or reporting why. It only
+  ever worked in singleplayer, where the client and integrated server share the same `Pokemon` object.
+  The client now reads the item it can actually see — the entity's synced `shownItem` — and, more
+  importantly, no longer gets a veto: the button always sends and the **server** answers, since it
+  alone knows the real held item and the real config (the client reads its *own* `megacobble.json`,
+  which on a server is unrelated). The client-side check is now only a grey **tint**. The
+  `allowRideInMega` wheel gate moved server-side for the same reason.
+- **Fix: any Mega Stone could mega-evolve any Pokémon in the overworld** — `applyWorldMega` checked
+  *that* a Mega Stone was held, never *which*. 90 of the 91 stones declare form `"Mega"`, so the form
+  lookup matched any mega-capable species: an **Absolite mega-evolved an Abomasnow**. World megas now
+  validate the stone's **species**, and its `requiredAspect` (which was never enforced — Floettite now
+  correctly requires the Eternal Flower Floette). New feedback: *"That Mega Stone belongs to a
+  different Pokémon."* The in-battle path is untouched — Showdown already gates it.
 - **Every Z-A + Mega Dimension DLC mega (44 total)** — added the full Pokémon Champions mega roster on
   top of the original 19. The 15 Champions megas (Raichu X/Y, Barbaracle, Chimecho, Crabominable,
   Dragalge, Eelektross, Falinks, Glimmora, Malamar, Pyroar, Scolipede, Scovillain, Scrafty, Staraptor)
