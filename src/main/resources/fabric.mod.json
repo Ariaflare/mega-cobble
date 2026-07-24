@@ -3,7 +3,7 @@
 	"id": "megacobble",
 	"version": "${version}",
 	"name": "Mega Cobble",
-	"description": "Adds Mega Evolution to Cobblemon. Proof of concept.",
+	"description": "Adds Mega Evolution to Cobblemon: real in-battle transformations through the bundled Showdown sim, out-of-battle world megas, and a data-driven pipeline for custom megas.",
 	"authors": [
 		"AaronCraft30"
 	],

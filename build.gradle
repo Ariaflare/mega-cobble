@@ -47,7 +47,7 @@ dependencies {
 	// Kotlin runtime required by Cobblemon
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-	// Cobblemon itself (the API we build the Mega Evolution PoC against)
+	// Cobblemon itself (the API we build the Mega Evolution add-on against)
 	modImplementation "com.cobblemon:fabric:${project.cobblemon_version}"
 
 	// Local dev-testing only: load Cobblemon Raid Dens + GeckoLib into runClient/runServer when those

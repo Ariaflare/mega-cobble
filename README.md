@@ -335,12 +335,11 @@ and kept only as a local reference.
 
 Newest first.
 
-- **v0.1.0 — first stable release.** Graduates Mega Cobble out of proof-of-concept. Everything below
-  this line is in: the full 44-mega Z-A + Champions/DLC roster with 91 Mega Stones, in-battle
-  Showdown megas (correct stats/typing/abilities, name synced to the HUD), out-of-battle "world"
-  megas via the interaction wheel and `/megacobble worldmega` (with riding), per-mega custom models
-  (Venusaur), the Key Stone gate, and the server-side fixes below. No functional change from v0.0.9 —
-  this is the version cut, not a patch.
+- **v0.1.0 — first stable release.** Everything below this line is in: the full 44-mega Z-A +
+  Champions/DLC roster with 91 Mega Stones, in-battle Showdown megas (correct stats/typing/abilities,
+  name synced to the HUD), out-of-battle "world" megas via the interaction wheel and
+  `/megacobble worldmega` (with riding), per-mega custom models (Venusaur), the Key Stone gate, and
+  the server-side fixes below. No functional change from v0.0.9 — this is the version cut, not a patch.
 - **Fix: the interaction-wheel Mega Evolve button did nothing on dedicated servers** — the client
   decided whether the button was usable by reading `Pokemon.heldItem()`, but that is **server-only
   state Cobblemon never syncs to clients**, so on a server it always read empty: the button greyed
@@ -474,7 +473,7 @@ Newest first.
   custom `HeldItemManager` (exposes our stones to the sim), a Key Stone → key-item bridge,
   and a `MEGA_EVOLUTION` hook for the visual. Replaced the earlier custom button + packet.
 - **All 47 classic Mega Stones** (Gen 6 / ORAS) in a dedicated **Mega Stones** creative tab.
-- **Mega Evolution proof of concept (Venusaur)** — Key Stone + Venusaurite, an in-battle
+- **First working Mega Evolution (Venusaur)** — Key Stone + Venusaurite, an in-battle
   Mega button, the form transform, the substitute-doll placeholder model, name change, and
   revert on battle end / flee / faint.
 - **Initial scaffold** — Fabric Loom project targeting Minecraft 1.21.1, Cobblemon 1.7.3,
