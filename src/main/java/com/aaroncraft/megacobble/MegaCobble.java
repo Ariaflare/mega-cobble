@@ -1,12 +1,16 @@
 package com.aaroncraft.megacobble;
 
+import com.aaroncraft.megacobble.battle.BattleDamageMonitor;
 import com.aaroncraft.megacobble.command.MegaCobbleCommands;
 import com.aaroncraft.megacobble.config.MegaCobbleConfig;
 import com.aaroncraft.megacobble.item.MegaStones;
+import com.aaroncraft.megacobble.item.ZCrystals;
 import com.aaroncraft.megacobble.mega.MegaEvolution;
 import com.aaroncraft.megacobble.mega.MegaShowdownInjector;
 import com.aaroncraft.megacobble.mega.MegaStoneHeldItemManager;
 import com.aaroncraft.megacobble.net.RequestWorldMegaPayload;
+import com.aaroncraft.megacobble.zmove.ZCrystalHeldItemManager;
+import com.aaroncraft.megacobble.zmove.ZMoves;
 import com.aaroncraft.megacobble.skin.GlobalSkins;
 import com.aaroncraft.megacobble.variant.MegaVariants;
 import com.cobblemon.mod.common.api.Priority;
@@ -48,6 +52,7 @@ public class MegaCobble implements ModInitializer {
 		MegaCobbleConfig.load();
 		MegaVariants.load();
 		MegaStones.load();
+		ZCrystals.load();
 		GlobalSkins.init();
 		MegaShowdownInjector.load();
 
@@ -62,9 +67,11 @@ public class MegaCobble implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			MegaCobbleCommands.register(dispatcher));
 
-		// Expose our Mega Stones to the bundled Showdown sim (Cobblemon's default manager only
-		// handles cobblemon-namespace items). Higher priority than Cobblemon's LOWEST default.
+		// Expose our Mega Stones and Z-Crystals to the bundled Showdown sim (Cobblemon's default
+		// manager only handles cobblemon-namespace items). Higher priority than Cobblemon's LOWEST
+		// default; the two managers coexist since a Pokémon holds one or the other, never both.
 		HeldItemProvider.register(new MegaStoneHeldItemManager(), Priority.NORMAL);
+		HeldItemProvider.register(new ZCrystalHeldItemManager(), Priority.NORMAL);
 
 		// At battle start: inject custom-mega data into the sim (megas not in Cobblemon's bundled
 		// sim), bridge each player's Key Stone item to Cobblemon's key-item gate so the native mega
@@ -74,6 +81,9 @@ public class MegaCobble implements ModInitializer {
 			MegaShowdownInjector.injectAll();
 			MegaShowdownInjector.fixMegaAbilities();
 			event.getBattle().getPlayers().forEach(MegaEvolution::syncKeyStone);
+			// Bridge the Z-Ring item to Cobblemon's cobblemon:z_ring key-item gate, so the native Z
+			// button appears only when a player brought a Z-Ring. Z-Moves themselves are pure Showdown.
+			event.getBattle().getPlayers().forEach(ZMoves::syncZRing);
 			MegaEvolution.revertWorldMegasForBattle(event.getBattle().getPlayers());
 		});
 
@@ -90,7 +100,11 @@ public class MegaCobble implements ModInitializer {
 		// Safety net: BATTLE_VICTORY/FLED only fire on a win or flee. Battles that end any other way
 		// (custom, forced, drawn) post no event, so reconcile every tick — revert any in-battle mega
 		// whose battle has ended. Cheap: a no-op unless something is currently mega-evolved in battle.
-		ServerTickEvents.END_SERVER_TICK.register(server -> MegaEvolution.revertEndedBattleMegas());
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			MegaEvolution.revertEndedBattleMegas();
+			// Per-player battle-damage readout (opt in with /megacobble damage on). No-op if nobody opted in.
+			BattleDamageMonitor.tick(server);
+		});
 	}
 
 	/**

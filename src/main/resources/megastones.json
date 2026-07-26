@@ -636,5 +636,13 @@
     "species": "absol",
     "form": "Mega-Z",
     "aspect": "mega-z"
+  },
+  {
+    "stone": "zygardite",
+    "name": "Zygardite",
+    "species": "zygarde",
+    "form": "Mega",
+    "aspect": "mega",
+    "requiredAspect": "complete-percent"
   }
 ]

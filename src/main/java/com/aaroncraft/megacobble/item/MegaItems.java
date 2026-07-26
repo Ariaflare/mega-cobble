@@ -1,6 +1,7 @@
 package com.aaroncraft.megacobble.item;
 
 import com.aaroncraft.megacobble.item.MegaStones.MegaStone;
+import com.aaroncraft.megacobble.item.ZCrystals.ZCrystal;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -33,8 +34,17 @@ public final class MegaItems {
     /** Reserved id for the Key Stone (which isn't a Mega Stone manifest entry). */
     public static final String KEY_STONE_ID = "key_stone";
 
+    /** Reserved id for the Z-Ring (the Z-Move trainer item; not a Z-Crystal manifest entry). */
+    public static final String Z_RING_ID = "z_ring";
+
     /** custom_model_data reserved for the Key Stone; manifest stones use {@code MegaStone.customModelData()}. */
     public static final int KEY_STONE_CMD = 1;
+
+    /** custom_model_data reserved for the Z-Ring. Z items live in a separate range from Mega Stones. */
+    public static final int Z_RING_CMD = 100;
+
+    /** First custom_model_data for a manifest Z-Crystal ({@link ZCrystals} assigns upward from here). */
+    public static final int Z_CRYSTAL_CMD_START = 101;
 
     public static ItemStack createStone(MegaStone stone) {
         return create(stone.stoneId(), stone.name(), stone.customModelData());
@@ -42,6 +52,14 @@ public final class MegaItems {
 
     public static ItemStack createKeyStone() {
         return create(KEY_STONE_ID, "Key Stone", KEY_STONE_CMD);
+    }
+
+    public static ItemStack createZCrystal(ZCrystal crystal) {
+        return create(crystal.crystalId(), crystal.name(), crystal.customModelData());
+    }
+
+    public static ItemStack createZRing() {
+        return create(Z_RING_ID, "Z-Ring", Z_RING_CMD);
     }
 
     /**
@@ -78,5 +96,10 @@ public final class MegaItems {
     /** @return true if the stack is a Key Stone (by custom_data). */
     public static boolean isKeyStone(ItemStack stack) {
         return KEY_STONE_ID.equals(idOf(stack));
+    }
+
+    /** @return true if the stack is a Z-Ring (by custom_data). */
+    public static boolean isZRing(ItemStack stack) {
+        return Z_RING_ID.equals(idOf(stack));
     }
 }

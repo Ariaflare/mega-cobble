@@ -31,13 +31,20 @@ STONE_NAMES = {
  'darkrai':'Darkraite','garchomp':'Garchompite Z','lucario':'Lucarionite Z','heatran':'Heatranite',
  'magearna':'Magearnite','zeraora':'Zeraorite','baxcalibur':'Baxcalibite','golisopod':'Golisopite',
  'tatsugiri':'Tatsugirite','absol':'Absolite Z',
+ # Legendary base-game Z-A mega absent from Champions; megas only from Complete Forme (see below).
+ 'zygarde':'Zygardite',
 }
 
 # Stones restricted to a specific form aspect: the held-item manager only exposes them to the
 # sim when the Pokemon has the aspect, so other forms can't mega. (Mega Floette = AZ's Eternal.)
 REQUIRED_ASPECT = {
  'floette':'flower-eternal',
+ 'zygarde':'complete-percent',  # Mega Zygarde forms only from the Complete Forme (100%).
 }
+
+# Restricted base forms that Cobblemon already ships a model for: don't hijack them with a
+# substitute resolver variation. (Eternal Floette has no model -> not listed -> gets a placeholder.)
+REQ_BASE_HAS_MODEL = {'zygarde'}
 
 # za_megas ability value -> Showdown ability id, for the brand-new abilities.
 NEW_ABILITY_ID = {'mega_sol':'megasol','dragonize':'dragonize','piercing_drill':'piercingdrill',
@@ -132,7 +139,10 @@ for sp, entries in by_species.items():
     variations=[]
     for e in entries:
         variations += [sub(e['aspect']), sub(e['aspect'], True)]
-    if req: variations += [sub(req), sub(req, True)]   # restricted base form (e.g. Eternal Floette) too
+    # Also override the restricted base form with a substitute -- but only when Cobblemon has no
+    # model for it (e.g. AZ's Eternal Floette). Zygarde's Complete Forme IS modeled, so leave it be.
+    if req and sp not in REQ_BASE_HAS_MODEL:
+        variations += [sub(req), sub(req, True)]
     json.dump({"species":f"cobblemon:{sp}","order":5,"variations":variations},
               open(f"{ROOT}/assets/cobblemon/bedrock/pokemon/resolvers/megacobble/{sp}.json","w"),indent=2)
 

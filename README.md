@@ -7,7 +7,7 @@ A Fabric add-on that brings **Mega Evolution** to
 **custom megas**.
 
 > Status: working in-battle. All **47 classic Gen 6 / ORAS** megas plus the **full Legends: Z-A +
-> Mega Dimension DLC set (44 megas)** run through Cobblemon's bundled Pokémon Showdown sim, so they're
+> Mega Dimension DLC set and base-game Mega Zygarde (45 megas)** run through Cobblemon's bundled Pokémon Showdown sim, so they're
 > **real in-battle transformations** (correct stats, typing, and ability), not cosmetic-only. The same
 > pipeline can add fully custom megas (see *Adding a custom Mega* below).
 
@@ -30,8 +30,9 @@ launch without them:
 ## Features
 
 - **47 classic Mega Stones** (every Gen 6 / ORAS mega, incl. Charizard & Mewtwo X/Y) and the
-  **44 Legends: Z-A / Mega Dimension** megas (incl. Raichu X/Y and the Garchomp/Lucario/Absol "Z"
-  megas), plus a **Key Stone** — **91 stones** in all. They're **vanilla items carrying a
+  **45 Legends: Z-A / Mega Dimension** megas (incl. Raichu X/Y, the Garchomp/Lucario/Absol "Z"
+  megas, and base-game **Mega Zygarde** — Complete Forme only), plus a **Key Stone** — **92 stones**
+  in all. They're **vanilla items carrying a
   `minecraft:custom_data` tag** (not registered custom items), so they work on a server even for
   clients without the mod; get them with **`/megacobble give <stone> [count]`**. The mod ships **no
   stone textures** — each stone carries a `custom_model_data` (Key Stone = 1, manifest stones = 2…) so
@@ -48,6 +49,14 @@ launch without them:
 - All megas currently render the **substitute doll** placeholder. (A custom **Mega Venusaur** 3D
   model + animation was built in Blockbench; it now lives outside the mod in `../megacobble-assets/`
   and isn't shipped while the visual pipeline is reworked.)
+- **Z-Moves** — all **35 Z-Crystals** (18 type crystals + 17 signature crystals) plus a **Z-Ring**,
+  shipped exactly like the Mega Stones (vanilla items with `custom_data`, server-side, no client mod
+  needed). Give a Pokémon its crystal as a held item and carry the Z-Ring; Cobblemon's bundled
+  Showdown handles the actual Z-Move mechanics and damage. Get them with **`/megacobble give <crystal>`**
+  and **`/megacobble give z_ring`**.
+- **In-battle damage readout** — any player can run **`/megacobble damage on`** to see the exact
+  damage each hit deals (read from the sim's own battle HP) printed to chat during their battles. A
+  built-in testing/QoL tool; off by default, per-player.
 - **World (out-of-battle) Mega Evolution** — mega-evolve a Pokémon for overworld exploration via
   a **"Mega Evolve" option on the shift-right-click interaction wheel** (modded clients) or the
   **`/megacobble worldmega`** command (any client, incl. vanilla on a server). You can **ride** the
@@ -65,7 +74,8 @@ Everything lives under **`/megacobble`** — see **[COMMANDS.md](COMMANDS.md)** 
 (syntax, permissions, targeting, and examples). In brief:
 
 - **`worldmega`** — out-of-battle Mega Evolution (available to all players, item-gated)
-- **`give`** — get a Mega Stone or the Key Stone *(op)*
+- **`damage [on|off]`** — toggle a per-player, in-battle damage readout (available to all players)
+- **`give`** — get a Mega Stone, the Key Stone, a Z-Crystal, or the Z-Ring *(op)*
 - **`variant`** — apply/list/reload named looks *(op)*
 - **`skin`** — force any aspect, including datapack-defined skins *(op)*
 - **`config`** — view/edit the world-mega settings *(op)*
@@ -335,6 +345,16 @@ and kept only as a local reference.
 
 Newest first.
 
+- **v0.1.1 — Z-Moves, Mega Zygarde, and a damage readout.**
+  - **Z-Moves**: all 35 Z-Crystals (18 type + 17 signature) and a Z-Ring, shipped like the Mega
+    Stones (vanilla items + `custom_data`, server-side). Hold the crystal + carry the Z-Ring; the
+    bundled Showdown does the mechanics. `/megacobble give <crystal>` / `give z_ring`.
+  - **Mega Zygarde**: the base-game Z-A mega that Champions omitted — Dragon/Ground, BST 778, gated
+    to the **Complete Forme** (`Zygardite`). Roster is now 45 Z-A megas / 92 stones.
+  - **`/megacobble damage [on|off]`**: a per-player, all-access in-battle damage readout that prints
+    each hit's exact damage (from the sim's real HP) to chat. Verified Z-Move/Mega damage is computed
+    correctly (e.g. Devastating Drake off Core Enforcer is 140 BP by the sim's spread-move override,
+    not 180 — matched to the point in-game).
 - **v0.1.0 — first stable release.** Everything below this line is in: the full 44-mega Z-A +
   Champions/DLC roster with 91 Mega Stones, in-battle Showdown megas (correct stats/typing/abilities,
   name synced to the HUD), out-of-battle "world" megas via the interaction wheel and

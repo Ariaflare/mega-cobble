@@ -711,6 +711,22 @@
     "special_defence": 60,
     "speed": 151
    }
+  },
+  {
+   "species": "zygarde",
+   "form": "Mega",
+   "aspect": "mega",
+   "type1": "dragon",
+   "type2": "ground",
+   "ability": "aurabreak",
+   "baseStats": {
+    "hp": 216,
+    "attack": 70,
+    "defence": 91,
+    "special_attack": 216,
+    "special_defence": 85,
+    "speed": 100
+   }
   }
  ],
  "_pending_comment": "All Z-A + Mega Dimension DLC mega formes are now shipped. Those that Pokemon Champions has NOT yet assigned a mega ability (Darkrai, Garchomp-Z, Lucario-Z, Heatran, Magearna, Zeraora, Baxcalibur, Golisopod, Tatsugiri, Absol-Z) temporarily KEEP their base-form primary ability as a placeholder; update the 'ability' field here when Champions reveals the real one, then re-run gen_custom_megas.py.",

@@ -1,0 +1,26 @@
+{
+  "target": "cobblemon:zygarde",
+  "forms": [
+    {
+      "name": "Mega",
+      "baseStats": {
+        "hp": 216,
+        "attack": 70,
+        "defence": 91,
+        "special_attack": 216,
+        "special_defence": 85,
+        "speed": 100
+      },
+      "primaryType": "dragon",
+      "abilities": [
+        "aurabreak"
+      ],
+      "aspects": [
+        "mega"
+      ],
+      "battleOnly": true,
+      "requiredItem": "Zygardite",
+      "secondaryType": "ground"
+    }
+  ]
+}

@@ -18,6 +18,8 @@
   "megacobble.command.player_only": "This command must be run by a player.",
   "megacobble.command.worldmega.no_target": "Look at one of your Pokémon, or use 'slot <1-6>'.",
   "megacobble.command.worldmega.empty_slot": "That party slot is empty.",
+  "megacobble.command.damage.on": "Battle damage readout ON — you'll see exact damage per hit in your battles.",
+  "megacobble.command.damage.off": "Battle damage readout OFF.",
   "megacobble.command.config.header": "Mega Cobble config:",
   "megacobble.command.config.unknown_key": "Unknown config key: %s",
   "megacobble.command.config.set": "Set %s to %s.",

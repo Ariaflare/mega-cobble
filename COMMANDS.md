@@ -6,8 +6,9 @@ Every command lives under **`/megacobble`**.
 
 - **Target** — commands that act on a Pokémon default to the **one you're looking at** (must be yours,
   within ~6 blocks and sent out). Add **`slot <1-6>`** to target a party slot instead.
-- **Permissions** — `worldmega` is available to **all players** (it's gated by the Key Stone / Mega
-  Stone instead). `give`, `variant`, `skin`, and `config` require **op (permission level 2)**.
+- **Permissions** — `worldmega` and `damage` are available to **all players** (`worldmega` is gated by
+  the Key Stone / Mega Stone instead). `give`, `variant`, `skin`, and `config` require **op
+  (permission level 2)**.
 - Notation: `<required>`, `[optional]`, `a|b` = choose one.
 
 ## Quick reference
@@ -15,7 +16,8 @@ Every command lives under **`/megacobble`**.
 | Command | Perm | What it does |
 | --- | --- | --- |
 | `/megacobble worldmega [on\|off\|toggle] [slot <1-6>]` | all | Mega-evolve a Pokémon out of battle |
-| `/megacobble give <stone\|random> [count] [<targets>]` | op | Give a Mega Stone / Key Stone / random stone to you or player(s) |
+| `/megacobble damage [on\|off\|toggle]` | all | Toggle your in-battle damage readout |
+| `/megacobble give <stone\|crystal\|random> [count] [<targets>]` | op | Give a Mega Stone / Key Stone / Z-Crystal / Z-Ring / random stone to you or player(s) |
 | `/megacobble variant list` | op | List the named-look catalog |
 | `/megacobble variant apply\|remove <variant> [slot <1-6>]` | op | Apply / remove a named look |
 | `/megacobble variant reload` | op | Re-read the look catalog from disk |
@@ -48,6 +50,27 @@ command equivalent of the interaction-wheel "Mega Evolve" button. No argument = 
 /megacobble worldmega                 # toggle the Pokémon you're looking at
 /megacobble worldmega off             # revert it
 /megacobble worldmega on slot 1       # mega the first Pokémon in your party
+```
+
+## `damage` — in-battle damage readout
+
+```
+/megacobble damage [on|off|toggle]
+```
+
+Toggles a **per-player** readout that prints the exact damage every hit deals during **your** battles
+to your chat, e.g. `Chansey took 202 (33%)  [415/617]`. No argument = **toggle**.
+
+- **Permission:** all players.
+- **Per-player and in-memory** — only you see your readout; it resets when the server restarts.
+- Reads the sim's **real battle HP** (not world-entity NBT, which only syncs at battle end), so the
+  numbers are exactly what Showdown computed. Useful for verifying Mega / Z-Move damage.
+- Multi-hit or same-tick hits may show as one combined number.
+
+**Examples**
+```
+/megacobble damage on         # start seeing damage numbers
+/megacobble damage off        # stop
 ```
 
 ## `give` — get stones

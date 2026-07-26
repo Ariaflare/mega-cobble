@@ -1,8 +1,10 @@
 package com.aaroncraft.megacobble.command;
 
+import com.aaroncraft.megacobble.battle.BattleDamageMonitor;
 import com.aaroncraft.megacobble.config.MegaCobbleConfig;
 import com.aaroncraft.megacobble.item.MegaItems;
 import com.aaroncraft.megacobble.item.MegaStones;
+import com.aaroncraft.megacobble.item.ZCrystals;
 import com.aaroncraft.megacobble.mega.MegaEvolution;
 import com.aaroncraft.megacobble.mega.MegaEvolution.WorldMegaResult;
 import com.aaroncraft.megacobble.skin.GlobalSkins;
@@ -61,6 +63,12 @@ public final class MegaCobbleCommands {
                         .then(Commands.literal("on").executes(ctx -> worldMega(ctx.getSource(), Mode.ON, IntegerArgumentType.getInteger(ctx, "slot"))))
                         .then(Commands.literal("off").executes(ctx -> worldMega(ctx.getSource(), Mode.OFF, IntegerArgumentType.getInteger(ctx, "slot"))))
                         .then(Commands.literal("toggle").executes(ctx -> worldMega(ctx.getSource(), Mode.TOGGLE, IntegerArgumentType.getInteger(ctx, "slot")))))))
+            // Per-player battle-damage readout. Available to everyone (no permission gate).
+            .then(Commands.literal("damage")
+                .executes(ctx -> damageDisplay(ctx.getSource(), Mode.TOGGLE))
+                .then(Commands.literal("on").executes(ctx -> damageDisplay(ctx.getSource(), Mode.ON)))
+                .then(Commands.literal("off").executes(ctx -> damageDisplay(ctx.getSource(), Mode.OFF)))
+                .then(Commands.literal("toggle").executes(ctx -> damageDisplay(ctx.getSource(), Mode.TOGGLE))))
             .then(Commands.literal("give")
                 .requires(src -> src.hasPermission(2))
                 .then(Commands.argument("stone", StringArgumentType.word())
@@ -116,6 +124,8 @@ public final class MegaCobbleCommands {
         ids.add("random");
         ids.add(MegaItems.KEY_STONE_ID);
         MegaStones.stoneIds().forEach(ids::add);
+        ids.add(MegaItems.Z_RING_ID);
+        ZCrystals.crystalIds().forEach(ids::add);
         return ids;
     }
 
@@ -139,10 +149,15 @@ public final class MegaCobbleCommands {
 
         boolean random = "random".equalsIgnoreCase(id);
         boolean keyStone = MegaItems.KEY_STONE_ID.equalsIgnoreCase(id);
+        boolean zRing = MegaItems.Z_RING_ID.equalsIgnoreCase(id);
         MegaStones.MegaStone fixed = null;
-        if (!random && !keyStone) {
+        ZCrystals.ZCrystal fixedCrystal = null;
+        if (!random && !keyStone && !zRing) {
             fixed = MegaStones.byStoneId(id);
             if (fixed == null) {
+                fixedCrystal = ZCrystals.byCrystalId(id);
+            }
+            if (fixed == null && fixedCrystal == null) {
                 source.sendFailure(Component.translatable("megacobble.command.give.unknown", id));
                 return 0;
             }
@@ -153,6 +168,10 @@ public final class MegaCobbleCommands {
             ItemStack stack;
             if (keyStone) {
                 stack = MegaItems.createKeyStone();
+            } else if (zRing) {
+                stack = MegaItems.createZRing();
+            } else if (fixedCrystal != null) {
+                stack = MegaItems.createZCrystal(fixedCrystal);
             } else {
                 MegaStones.MegaStone stone = random ? pool.get(ThreadLocalRandom.current().nextInt(pool.size())) : fixed;
                 stack = MegaItems.createStone(stone);
@@ -163,7 +182,11 @@ public final class MegaCobbleCommands {
             }
         }
 
-        String what = random ? "a random Mega Stone" : keyStone ? "Key Stone" : fixed.name();
+        String what = random ? "a random Mega Stone"
+            : keyStone ? "Key Stone"
+            : zRing ? "Z-Ring"
+            : fixedCrystal != null ? fixedCrystal.name()
+            : fixed.name();
         if (targets == null) {
             source.sendSuccess(() -> Component.translatable("megacobble.command.give.given", count, what)
                 .withStyle(ChatFormatting.GREEN), false);
@@ -405,6 +428,24 @@ public final class MegaCobbleCommands {
                 .append(Component.literal(String.valueOf(value))
                     .withStyle(value ? ChatFormatting.GREEN : ChatFormatting.RED)), false);
         }
+        return 1;
+    }
+
+    /** Per-player toggle for the in-battle damage readout. Available to any player. */
+    private static int damageDisplay(CommandSourceStack source, Mode mode) {
+        ServerPlayer player = source.getPlayer();
+        if (player == null) {
+            source.sendFailure(Component.translatable("megacobble.command.player_only"));
+            return 0;
+        }
+        boolean enabled = switch (mode) {
+            case ON -> BattleDamageMonitor.setEnabled(player.getUUID(), true);
+            case OFF -> BattleDamageMonitor.setEnabled(player.getUUID(), false);
+            case TOGGLE -> BattleDamageMonitor.toggle(player.getUUID());
+        };
+        source.sendSuccess(() -> Component.translatable(
+                enabled ? "megacobble.command.damage.on" : "megacobble.command.damage.off")
+            .withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.YELLOW), false);
         return 1;
     }
 
