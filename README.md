@@ -345,6 +345,13 @@ and kept only as a local reference.
 
 Newest first.
 
+- **v0.1.2 — stoneless Mega Rayquaza (in-battle + overworld).** Rayquaza Mega Evolves with **no Mega
+  Stone**, the authentic way: it just needs to know **Dragon Ascent** (+ a Key Stone). In battle the
+  mod feeds Showdown a virtual "Rayquazite" for a Dragon-Ascent Rayquaza — invisible to the player,
+  no held item — so the sim offers the mega (the ungated item path; Gen-9 Showdown otherwise gates the
+  move-based mega behind a rule that doesn't reach its in-process sim). Out of battle, `/megacobble
+  worldmega` allows it via a move-gated stoneless exception (still refuses other stoneless mons). Model
+  falls back to the substitute doll and it's renamed Mega-Rayquaza, like the other model-less megas.
 - **v0.1.1 — Z-Moves, Mega Zygarde, and a damage readout.**
   - **Z-Moves**: all 35 Z-Crystals (18 type + 17 signature) and a Z-Ring, shipped like the Mega
     Stones (vanilla items + `custom_data`, server-side). Hold the crystal + carry the Z-Ring; the

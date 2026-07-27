@@ -179,6 +179,17 @@ for sp, entries in by_species.items():
             lang[f"cobblemon.ability.{ab_id}.desc"]=NEW_ABILITY_DESC[ab_id]
         count+=1
 
+# Mega Rayquaza is stoneless (Dragon Ascent), so it has no Mega Stone in the manifest. But Cobblemon's
+# Gen-9 sim only offers a MOVE-based mega when the ruleset carries the "past" tag (which doesn't reliably
+# reach the in-process sim), whereas the ITEM-based canMegaEvo branch has no gate. So inject a virtual
+# "Rayquazite": the mod hands its Showdown id to the SIM only (never to the player, no held item) for a
+# Dragon-Ascent Rayquaza, and the sim then offers Mega Rayquaza. Rayquaza-Mega already exists in the sim.
+held_items['rayquazite']=("{ name: 'Rayquazite', megaStone: 'Rayquaza-Mega', megaEvolves: 'Rayquaza',"
+    " itemUser: ['Rayquaza'], num: %d, gen: 8,"
+    " onTakeItem(item, source) { if (item.megaEvolves === source.baseSpecies.baseSpecies) return false; return true; } }"
+    % num)
+num+=1
+
 json.dump(manifest, open(manifest_path,"w"),indent=2)
 json.dump(lang, open(lang_path,"w",encoding='utf-8'),indent=2,ensure_ascii=False)
 

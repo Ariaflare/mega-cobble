@@ -5,6 +5,7 @@ import com.aaroncraft.megacobble.config.MegaCobbleConfig;
 import com.aaroncraft.megacobble.item.MegaItems;
 import com.aaroncraft.megacobble.item.MegaStones;
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
@@ -96,10 +97,12 @@ public final class MegaEvolution {
      */
     public static void applyMega(Pokemon target, PokemonBattle battle) {
         MegaStones.MegaStone stone = MegaStones.byCustomData(target.heldItem());
-        if (stone == null) {
-            return;
-        }
-        FormData megaForm = findFormByName(target, stone.form());
+        // Stoneless megas (Rayquaza via Dragon Ascent) hold no Mega Stone, so resolve their form from
+        // the species' first mega form instead — otherwise the Showdown-driven mega would apply the
+        // stats but never switch the Minecraft-side model, aspect, or name.
+        FormData megaForm = stone != null
+            ? findFormByName(target, stone.form())
+            : (knowsStonelessMegaMove(target) ? firstMegaForm(target) : null);
         if (megaForm == null) {
             return;
         }
@@ -235,7 +238,11 @@ public final class MegaEvolution {
             }
             stone = null; // stone requirement off: ignore the mismatched stone rather than block.
         }
-        if (cfg.requireMegaStone && stone == null) {
+        // Stoneless megas (e.g. Rayquaza) have a Mega form but no Mega Stone — they're unlocked by a
+        // MOVE instead (Rayquaza -> Dragon Ascent), exactly as in-battle. The Mega Stone requirement
+        // can't apply to them, so accept them when the Pokémon knows the unlock move.
+        boolean stonelessMega = stone == null && knowsStonelessMegaMove(target);
+        if (cfg.requireMegaStone && stone == null && !stonelessMega) {
             return WorldMegaResult.NO_MEGA_STONE;
         }
         FormData megaForm = stone != null ? findFormByName(target, stone.form()) : firstMegaForm(target);
@@ -339,6 +346,57 @@ public final class MegaEvolution {
     /** @return true if the species has any form whose name starts with "Mega". */
     public static boolean hasMegaForm(Pokemon pokemon) {
         return firstMegaForm(pokemon) != null;
+    }
+
+    /**
+     * Stoneless megas: species that Mega Evolve with no Mega Stone, unlocked by a specific MOVE
+     * instead. Maps the species (resource path) to the required move's normalised id. Rayquaza is the
+     * canonical case (Dragon Ascent). In battle the bundled Showdown enforces this move; out of battle
+     * we enforce it here so a Rayquaza that doesn't know Dragon Ascent still can't world-mega.
+     */
+    private static final Map<String, String> STONELESS_MEGA_MOVES = Map.of("rayquaza", "dragonascent");
+
+    /**
+     * Stoneless megas -> the VIRTUAL Showdown mega-stone id the mod feeds the sim (never the player).
+     * Mega Rayquaza is unlocked by Dragon Ascent, not a Mega Stone, and Cobblemon's Gen-9 sim doesn't
+     * reliably honor the move-based mega gate — but the sim's ITEM-based canMegaEvo has no gate. So the
+     * mod tells the sim a Dragon-Ascent Rayquaza "holds" this item, offering Mega Rayquaza with no stone
+     * the player ever holds or obtains.
+     */
+    private static final Map<String, String> STONELESS_MEGA_SIM_ITEM = Map.of("rayquaza", "rayquazite");
+
+    /**
+     * @return the virtual Showdown mega-stone id to feed the sim for a stoneless mega that currently
+     * knows its unlock move (e.g. "rayquazite" for a Dragon-Ascent Rayquaza), or null otherwise.
+     */
+    public static String stonelessMegaSimItem(Pokemon pokemon) {
+        if (!knowsStonelessMegaMove(pokemon)) {
+            return null;
+        }
+        return STONELESS_MEGA_SIM_ITEM.get(pokemon.getSpecies().getResourceIdentifier().getPath());
+    }
+
+    /**
+     * @return true if this Pokémon is a stoneless mega (e.g. Rayquaza) AND currently knows the move
+     * that unlocks its mega. Used to let such megas skip the held-Mega-Stone requirement out of battle.
+     */
+    public static boolean knowsStonelessMegaMove(Pokemon pokemon) {
+        String species = pokemon.getSpecies().getResourceIdentifier().getPath();
+        String requiredMove = STONELESS_MEGA_MOVES.get(species);
+        if (requiredMove == null) {
+            return false;
+        }
+        for (Move move : pokemon.getMoveSet().getMoves()) {
+            if (move != null && normalizeMoveId(move.getName()).equals(requiredMove)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Normalise a move name/id to the sim's id form: lowercase, letters/digits only ("Dragon Ascent" -> "dragonascent"). */
+    private static String normalizeMoveId(String name) {
+        return name == null ? "" : name.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
     }
 
     /** Mega forms already checked for the riding-seats patch (per-form, once). */

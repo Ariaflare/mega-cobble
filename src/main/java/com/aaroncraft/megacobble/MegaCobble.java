@@ -8,6 +8,7 @@ import com.aaroncraft.megacobble.item.ZCrystals;
 import com.aaroncraft.megacobble.mega.MegaEvolution;
 import com.aaroncraft.megacobble.mega.MegaShowdownInjector;
 import com.aaroncraft.megacobble.mega.MegaStoneHeldItemManager;
+import com.aaroncraft.megacobble.mega.RayquazaMegaHeldItemManager;
 import com.aaroncraft.megacobble.net.RequestWorldMegaPayload;
 import com.aaroncraft.megacobble.zmove.ZCrystalHeldItemManager;
 import com.aaroncraft.megacobble.zmove.ZMoves;
@@ -72,6 +73,9 @@ public class MegaCobble implements ModInitializer {
 		// default; the two managers coexist since a Pokémon holds one or the other, never both.
 		HeldItemProvider.register(new MegaStoneHeldItemManager(), Priority.NORMAL);
 		HeldItemProvider.register(new ZCrystalHeldItemManager(), Priority.NORMAL);
+		// Stoneless Mega Rayquaza: feed the sim a virtual "Rayquazite" for a Dragon-Ascent Rayquaza so
+		// Showdown's (ungated) item-based mega offers Mega Rayquaza — no stone the player ever holds.
+		HeldItemProvider.register(new RayquazaMegaHeldItemManager(), Priority.NORMAL);
 
 		// At battle start: inject custom-mega data into the sim (megas not in Cobblemon's bundled
 		// sim), bridge each player's Key Stone item to Cobblemon's key-item gate so the native mega
